@@ -1,0 +1,4 @@
+345655; Mario Rossi mat: 345655 esami: [('544MM', 23)];note
+528611; Luigi Bianchi mat: 528611 esami: [('564GG', 18)];
+232526; Lucia Piazza mat: 232526 esami: no;
+345654; Maria Rossi mat: 345654 esami: [('444GG', 30), ('564GG', 20)];
