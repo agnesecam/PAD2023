@@ -57,27 +57,27 @@ class myApp:
         contenitore1 = tk.Frame(self.dialog)
         contenitore1.pack()
         # Creo le etichette per i campi di input
-        label_cognome = tk.Label(contenitore1, text="Cognome")
-        label_cognome.grid(row=0, column=0)
-        label_nome = tk.Label(contenitore1, text="Nome")
-        label_nome.grid(row=1, column=0)
-        label_matricola = tk.Label(contenitore1, text="Matricola")
-        label_matricola.grid(row=2, column=0)
-        label_esami = tk.Label(contenitore1, text="Esami")
-        label_esami.grid(row=3, column=0)
-        label_note = tk.Label(contenitore1, text="Note")
-        label_note.grid(row=4, column=0)
+        self.label_cognome = tk.Label(contenitore1, text="Cognome")
+        self.label_cognome.grid(row=0, column=0)
+        self.label_nome = tk.Label(contenitore1, text="Nome")
+        self.label_nome.grid(row=1, column=0)
+        self.label_matricola = tk.Label(contenitore1, text="Matricola")
+        self.label_matricola.grid(row=2, column=0)
+        self.label_esami = tk.Label(contenitore1, text="Esami")
+        self.label_esami.grid(row=3, column=0)
+        self.label_note = tk.Label(contenitore1, text="Note")
+        self.label_note.grid(row=4, column=0)
         # Creo i campi di input
-        entry_cognome = tk.Entry(contenitore1, width=30)
-        entry_cognome.grid(row=0, column=1)
-        entry_nome = tk.Entry(contenitore1, width=30)
-        entry_nome.grid(row=1, column=1)
-        entry_matricola = tk.Entry(contenitore1, width=30)
-        entry_matricola.grid(row=2, column=1)
-        entry_esami = tk.Entry(contenitore1, width=30)
-        entry_esami.grid(row=3, column=1)
-        entry_note = tk.Entry(contenitore1, width=30)
-        entry_note.grid(row=4, column=1)        
+        self.entry_cognome = tk.Entry(contenitore1, width=30)
+        self.entry_cognome.grid(row=0, column=1)
+        self.entry_nome = tk.Entry(contenitore1, width=30)
+        self.entry_nome.grid(row=1, column=1)
+        self.entry_matricola = tk.Entry(contenitore1, width=30)
+        self.entry_matricola.grid(row=2, column=1)
+        self.entry_esami = tk.Entry(contenitore1, width=30)
+        self.entry_esami.grid(row=3, column=1)
+        self.entry_note = tk.Entry(contenitore1, width=30)
+        self.entry_note.grid(row=4, column=1)        
         # Creo il pulsante per l'inserimento
         pulsante_inserisci = tk.Button(contenitore1, text="Inserisci")
         pulsante_inserisci.grid(row=5, column=1)
@@ -87,10 +87,20 @@ class myApp:
         # Prendo i dati in input
         cognome = self.entry_cognome.get()
         nome = self.entry_nome.get()
-        matricola = self.entry_matricola.get()
-        lista_esami = self.entry_esami.get()
+        matricola = int(self.entry_matricola.get())
+        input_esami = self.entry_esami.get()
+        #Esami
+        lista_esami = []
+        for esame in input_esami.split(','):
+            esame = esame.strip().split('-')
+            if esame and len(esame) == 2:
+                codice, voto = esame
+                voto = int(voto)
+                lista_esami.append((codice, voto))
+        print(lista_esami)
+        #Note
         note = self.entry_note.get()
-        # Creo un nuovo studente
+
         nuovo_studente = Studente(nome, cognome, matricola, lista_esami)
         self.archivio.inserisci(nuovo_studente, note)
         
