@@ -339,6 +339,10 @@ class Archivio:
         except IOError as e:
             print("ERRORE durante il caricamento del file " + str(nomefile) + ":" + str(e))
             return False
+        
+    #Usata nella GUI    
+    def lunghezza_archivio(self):
+        return len(self.stud)
 
 
 
