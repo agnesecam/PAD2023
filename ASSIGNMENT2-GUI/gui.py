@@ -34,26 +34,34 @@ class EntryWithPlaceholder(tk.Entry):
 
         self.put_placeholder()
 
+
     def put_placeholder(self):
         self.insert(0, self.placeholder)
         self['fg'] = self.placeholder_color
+
 
     def foc_in(self, *args):
         if self['fg'] == self.placeholder_color:
             self.delete('0', 'end')
             self['fg'] = self.default_fg_color
 
+
     def foc_out(self, *args):
         if not self.get():
             self.put_placeholder()
+
+
+
 
 class ConsoleRedirector:
     def __init__(self, textbox):
         self.textbox = textbox
 
+
     def write(self, text):
         self.textbox.insert(tk.END, text)
         self.textbox.see(tk.END)  # Scorrimento automatico alla fine del testo
+
 
     def flush(self):
         pass
@@ -83,28 +91,43 @@ class InserisciStudenteDialog:
         # Pulsante per inserire lo studente
         tk.Button(self.dialog, text="Inserisci", command=self.inserisci_studente).grid(row=9, column=0, columnspan=2, pady=10)
 
+
     def inserisci_studente(self):
         cognome = self.entry_cognome.get()
         nome = self.entry_nome.get()
         matricola = self.entry_matricola.get()
-
+        #Se la matricola non è un numero intero il sistema prova a convertirla in un numero intero e se non ci riesce solleva un'eccezione
         try:
             matricola = int(matricola)
-        except ValueError:
+        except ValueError: 
+            messagebox.showerror("Errore", "La matricola deve essere un numero intero positivo.")
+            return
+        if matricola <= 0:
             messagebox.showerror("Errore", "La matricola deve essere un numero intero positivo.")
             return
 
         esami_input = self.entry_esami.get()
         esami = []
-        for esame in esami_input.split(','):
-            esame = esame.strip().split('-')
-            if esame and len(esame) == 2:
-                codice, voto = esame
-                esami.append((codice, int(voto)))
-
+        #Se l'utente ha inserito deli esami
+        if not (esami_input is None or esami_input == "" or esami_input == self.entry_esami.placeholder): #Dato che ho inserito i placeholder devo considerare che esami_input non sia proprio vuoto, ma che sia uguale al placeholder
+            for esame in esami_input.split(','):
+                esame = esame.strip().split('-')
+                if esame and len(esame) == 2:
+                    codice, voto = esame
+                    voto = int(voto)
+                    if not (18 <= voto <= 33):
+                        messagebox.showerror("Errore", "Il voto deve essere un numero intero compreso tra 18 e 33.")
+                        return
+                    esami.append((codice, voto))
+                else:
+                    messagebox.showerror("Errore", "Formato esami non valido.")
+                    return
+            
         nuovo_studente = Studente(cognome, nome, matricola, esami)
         self.callback(nuovo_studente, esami_input)
         self.dialog.destroy()
+
+
 
 class myApp:
     def __init__(self, root):
@@ -161,9 +184,14 @@ class myApp:
         InserisciStudenteDialog(self.root, self.inserisci_studente_callback)
 
     def inserisci_studente_callback(self, studente, esami_input):
+        lunghezza_archivio_prima = self.archivio.lunghezza_archivio()
         # Aggiungi lo studente all'archivio
         self.archivio.inserisci(studente, "")
-        print("Studente inserito:", studente, "con esami:", esami_input)
+        lunghezza_archivio_dopo = self.archivio.lunghezza_archivio()
+        if lunghezza_archivio_dopo == lunghezza_archivio_prima:
+            messagebox.showerror("Inserimento studente", "Impossibile aggiungere lo studente, controllare la correttezza dei campi.")
+        elif lunghezza_archivio_dopo == lunghezza_archivio_prima + 1:
+            messagebox.showinfo("Inserimento studente", "Studente inserito.")
 
 root = tk.Tk()
 app = myApp(root)
