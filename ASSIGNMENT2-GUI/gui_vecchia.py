@@ -79,6 +79,7 @@ class InserisciStudenteDialog:
         tk.Label(self.dialog, text="Nome:").grid(row=1, column=0, sticky=tk.W, padx=5, pady=5)
         tk.Label(self.dialog, text="Matricola:").grid(row=2, column=0, sticky=tk.W, padx=5, pady=5)
         tk.Label(self.dialog, text="Esami:").grid(row=3, column=0, sticky=tk.W, padx=5, pady=5)
+        tk.Label(self.dialog, text="Note:").grid(row=4, column=0, sticky=tk.W, padx=5, pady=5)
         # Campi di testo
         self.entry_cognome = tk.Entry(self.dialog, width=60)
         self.entry_cognome.grid(row=0, column=1, padx=5, pady=5)
@@ -88,6 +89,8 @@ class InserisciStudenteDialog:
         self.entry_matricola.grid(row=2, column=1, padx=5, pady=5)
         self.entry_esami = EntryWithPlaceholder(self.dialog, placeholder="Scrivere gli esami nel formato 544MM-30, 564GG-22, 241SS-25...",  placeholder_color='grey', width=60)
         self.entry_esami.grid(row=3, column=1, padx=5, pady=5)
+        self.entry_note = tk.Entry(self.dialog, width=60)
+        self.entry_note.grid(row=4, column=1, padx=5, pady=5)
         # Pulsante per inserire lo studente
         tk.Button(self.dialog, text="Inserisci", command=self.inserisci_studente).grid(row=9, column=0, columnspan=2, pady=10)
 
@@ -122,6 +125,8 @@ class InserisciStudenteDialog:
                 else:
                     messagebox.showerror("Errore", "Formato esami non valido.")
                     return
+                
+        note = self.entry_note.get()
             
         nuovo_studente = Studente(cognome, nome, matricola, esami)
         self.callback(nuovo_studente, esami_input)
