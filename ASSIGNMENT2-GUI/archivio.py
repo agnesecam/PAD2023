@@ -177,7 +177,10 @@ class Archivio:
     def __str__(self):
         stampa = ""
         for matricola, (studente, note) in self.stud.items():
-            stampa += str(studente) + str(note) + "\n"
+            if note == "":
+                stampa += str(studente) + "\n"
+            else:
+                stampa += str(studente) + ' ' + str(note) + "\n"
         return stampa
 
     def elimina(self, matricola):
