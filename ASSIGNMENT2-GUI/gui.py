@@ -14,7 +14,6 @@ from archivio import *
 import tkinter as tk
 from tkinter import messagebox
 import re 
-import unicodedata
 
 class myApp:
     def __init__(self, root):
@@ -40,12 +39,18 @@ class myApp:
         # Creo i bottoni
         # Visualizza archivio
         self.pulsante_visualizzaArchivio = tk.Button(contenitore1, text="Visualizza archivio")
-        self.pulsante_visualizzaArchivio.pack()
+        self.pulsante_visualizzaArchivio.grid(row=0, column=0)
         self.pulsante_visualizzaArchivio.bind("<Button-1>", self.finestra_visualizza_archivio)
         # Inserisci studente
         self.pulsante_inserisciStudente = tk.Button(contenitore1, text="Inserisci studente")
-        self.pulsante_inserisciStudente.pack()
+        self.pulsante_inserisciStudente.grid(row=1, column=0)
         self.pulsante_inserisciStudente.bind("<Button-1>", self.finestra_inserisci_studente)
+        # Modifica studente
+        self.pulsante_modificaStudente = tk.Button(contenitore1, text="Modifica studente")
+        self.pulsante_modificaStudente.grid(row=2, column=0)
+        self.entry_matricola_modificaStudente = tk.Entry(contenitore1, width=20)
+        self.entry_matricola_modificaStudente.grid(row=2, column=1)
+        self.pulsante_modificaStudente.bind("<Button-1>", self.on_pulsante_modificaStudente) #on_pulsante_modificaStudente serve a passare il valore della matricola da modificare
 
     def contiene_solo_caratteri(self, campo, caratteri_validi, etichetta):
         pattern = "^[{}]+$".format(re.escape(caratteri_validi))
@@ -149,14 +154,73 @@ class myApp:
             nuovo_studente.set_listaesami(lista_esami)
             # Inserisco lo studente nell'archivio assieme alle note 
             self.archivio.inserisci(nuovo_studente, note)
-            
+
         # Controllo se l'inserimento è avvenuto
         if len(self.archivio.stud) > lunghezza_archivio:
             messagebox.showinfo("Inserimento avvenuto", "Lo studente è stato inserito correttamente.")
         else:
             messagebox.showerror("Errore", "Lo studente non è stato inserito: riferirsi alla console per maggiori informazioni.")
         
+    def on_pulsante_modificaStudente(self, event):
+        # Eseguo la funzione di modifica, passando il valore dell'entry come parametro
+        self.finestra_modifica_studente(self.entry_matricola_modificaStudente.get())
+
+    def finestra_modifica_studente(self, matricola):
+        # Creo una nuova finestra per gestire l'inserimento di un nuovo studente
+        self.dialog = tk.Toplevel(self.root)
+        self.dialog.title("Modifica studente con matricola " + str(matricola))
+        self.dialog.geometry("400x300")
+        # Creo il frame contenitore
+        contenitore1 = tk.Frame(self.dialog)
+        contenitore1.pack()
+        # Recupero i dati dello studente
+        if matricola is not None or matricola != "":
+            matricola = int(matricola)
+            if matricola in self.archivio.get_studenti():
+                cognome_vecchio = self.archivio.studente(matricola).get_cognome()
+                nome_vecchio = self.archivio.studente(matricola).get_nome()
+                esami_vecchi = self.archivio.studente(matricola).get_listaesami()
+                note_vecchie = self.archivio.get_note(matricola)
+            else:
+                messagebox.showerror("Errore", "La matricola inserita non è presente nell'archivio.")
+                return
             
+            # Creo le etichette per i campi di input
+            self.label_cognome_nuovo = tk.Label(contenitore1, text="Cognome")
+            self.label_cognome_nuovo.grid(row=0, column=0)
+            self.label_nome_nuovo = tk.Label(contenitore1, text="Nome")
+            self.label_nome_nuovo.grid(row=1, column=0)
+            self.label_matricola = tk.Label(contenitore1, text="Matricola")
+            self.label_matricola.grid(row=2, column=0)
+            self.label_esami_nuovi = tk.Label(contenitore1, text="Esami")
+            self.label_esami_nuovi.grid(row=3, column=0)
+            self.label_note_nuove = tk.Label(contenitore1, text="Note")
+            self.label_note_nuove.grid(row=4, column=0)
+            # Creo i campi di input
+            self.entry_cognome = tk.Entry(contenitore1, width=50)
+            self.entry_cognome.grid(row=0, column=1)
+            self.entry_cognome.delete(0, tk.END)
+            self.entry_cognome.insert(0, cognome_vecchio)
+            self.entry_nome = tk.Entry(contenitore1, width=50)
+            self.entry_nome.grid(row=1, column=1)
+            self.entry_nome.delete(0, tk.END)
+            self.entry_nome.insert(0, nome_vecchio)            
+            '''matricola_vecchia = tk.StringVar()
+            self.entry_matricola = tk.Entry(contenitore1, width=50, textvariable=matricola_vecchia)
+            matricola_vecchia.set(matricola)
+            self.entry_matricola.grid(row=2, column=1)'''
+            self.entry_esami = tk.Entry(contenitore1, width=50)
+            self.entry_esami.grid(row=3, column=1)
+            self.entry_esami.delete(0, tk.END)
+            self.entry_esami.insert(0, str(esami_vecchi))
+
+            self.entry_note = tk.Entry(contenitore1, width=50)            
+            self.entry_note.grid(row=4, column=1)
+            self.entry_note.delete(0, tk.END)
+            self.entry_note.insert(0, note_vecchie)
+            
+        
+
         
 
 # Dato che l'inserimento degli esami per la registrazione di un nuovo studente richiede che gli esami siano inseriti in un formato specifico, ho deciso di creare una casella di testo con un placeholder che mostra un esempio di come inserire gli esami.
