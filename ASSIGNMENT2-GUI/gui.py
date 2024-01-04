@@ -1,6 +1,6 @@
 '''
 [x] visualizzare il contenuto del archivio,
-[  ] inserire un nuovo studente nell'archivio,
+[x] inserire un nuovo studente nell'archivio,
 [  ] modificare i dati di uno studente,
 
 [  ] cancellare uno studente dall'archivio,
