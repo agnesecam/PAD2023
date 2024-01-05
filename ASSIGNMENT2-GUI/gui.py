@@ -1,7 +1,7 @@
 '''
 [x] visualizzare il contenuto del archivio,
 [x] inserire un nuovo studente nell'archivio,
-[  ] modificare i dati di uno studente,
+[x] modificare i dati di uno studente,
 
 [  ] cancellare uno studente dall'archivio,
 [  ] calcolare la media dei voti di uno studente,
@@ -160,7 +160,7 @@ class myApp:
             messagebox.showinfo("Inserimento avvenuto", "Lo studente è stato inserito correttamente.")
         else:
             messagebox.showerror("Errore", "Lo studente non è stato inserito: riferirsi alla console per maggiori informazioni.")
-        
+
     def on_pulsante_modificaStudente(self, event):
         # Eseguo la funzione di modifica, passando il valore dell'entry come parametro
         self.finestra_modifica_studente(self.entry_matricola_modificaStudente.get())
@@ -173,7 +173,8 @@ class myApp:
         # Creo il frame contenitore
         contenitore1 = tk.Frame(self.dialog)
         contenitore1.pack()
-        # Recupero i dati dello studente
+
+        # Recupero i vecchi dati dello studente
         if matricola is not None or matricola != "":
             matricola = int(matricola)
             if matricola in self.archivio.get_studenti():
@@ -185,7 +186,7 @@ class myApp:
                 messagebox.showerror("Errore", "La matricola inserita non è presente nell'archivio.")
                 return
             
-            # Creo le etichette per i campi di input
+            # Creo le label per i campi di input
             self.label_cognome_nuovo = tk.Label(contenitore1, text="Cognome")
             self.label_cognome_nuovo.grid(row=0, column=0)
             self.label_nome_nuovo = tk.Label(contenitore1, text="Nome")
@@ -204,20 +205,77 @@ class myApp:
             self.entry_nome = tk.Entry(contenitore1, width=50)
             self.entry_nome.grid(row=1, column=1)
             self.entry_nome.delete(0, tk.END)
-            self.entry_nome.insert(0, nome_vecchio)            
-            '''matricola_vecchia = tk.StringVar()
-            self.entry_matricola = tk.Entry(contenitore1, width=50, textvariable=matricola_vecchia)
-            matricola_vecchia.set(matricola)
-            self.entry_matricola.grid(row=2, column=1)'''
+            self.entry_nome.insert(0, nome_vecchio)
             self.entry_esami = tk.Entry(contenitore1, width=50)
             self.entry_esami.grid(row=3, column=1)
             self.entry_esami.delete(0, tk.END)
             self.entry_esami.insert(0, str(esami_vecchi))
-
             self.entry_note = tk.Entry(contenitore1, width=50)            
             self.entry_note.grid(row=4, column=1)
             self.entry_note.delete(0, tk.END)
-            self.entry_note.insert(0, note_vecchie)
+            self.entry_note.insert(0, note_vecchie)         
+            #La matricola non sarà modificabile, quindi uso una casella di testo con lo stato disabilitato
+            self.readOnlyText = tk.Text(contenitore1, width=37, height=1)
+            self.readOnlyText.insert(1.0, matricola)
+            self.readOnlyText.configure(state="disabled")
+            self.readOnlyText.grid(row=2, column=1)
+
+            # Creo il pulsante per l'inserimento
+            pulsante_salva_modifiche = tk.Button(contenitore1, text="Salva")
+            pulsante_salva_modifiche.grid(row=6, column=1)
+            pulsante_salva_modifiche.bind("<Button-1>", lambda event, matricola=matricola: self.on_pulsante_salvaModifiche_wrapper(event, matricola))
+
+
+    def on_pulsante_salvaModifiche_wrapper(self, event, matricola):
+        self.salva_ModificheStudente(matricola)
+        
+    def salva_ModificheStudente(self, matricola):
+        studente = self.archivio.studente(matricola)
+
+        # Prendo i dati in input
+        cognome = self.entry_cognome.get()
+        nome = self.entry_nome.get()
+        matricola = self.readOnlyText.get(1.0, tk.END)
+        input_esami = self.entry_esami.get()
+        note = self.entry_note.get()
+
+        # Caratteri ammessi nei campi
+        lettere_base = "qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM"
+        lettere_accentate = "éèòçàùìÉÈÒÇÀÙÌ"
+        lettere = lettere_base + lettere_accentate
+        chars_nomecognome = lettere + " " + "'"
+        numeri = "1234567890"
+
+        # Controllo che i caratteri inseriti nei campi siano adeguati (solo lettere per nome e cognome, solo numeri per la matricola)
+        if self.contiene_solo_caratteri(cognome, chars_nomecognome, "cognome") and self.contiene_solo_caratteri(nome, chars_nomecognome, "nome") and self.contiene_solo_caratteri(matricola, numeri, "matricola"):            
+            studente.set_cognome(cognome)
+            studente.set_nome(nome)
+            # input esami [('564GG', 18), ('241SS', 30), ('544MM', 26)] è una stringa, e lista_esami deve essere una lista di tuple
+            cleaned_input_esami = input_esami.replace("[", "").replace("]", "").replace("(", "").replace(")", "")
+            # cleaned_input_esami  '564GG', 18, '241SS', 30, '544MM', 26
+            elements = cleaned_input_esami.split(', ')
+            # I valori in posizione dispari sono i voti, quelli in posizione pari sono i codici, sfrutto questa cosa per creare due liste che poi unisco per ottenere la lista_esami
+            codici = []
+            voti = []
+            pari = True
+            for element in elements:
+                if pari:
+                    codice = element.strip("'")
+                    codici.append(codice)
+                else:
+                    voto = int(element)
+                    voti.append(voto)
+                pari = not pari
+            # Unisci le due liste alternando codice e voto
+            lista_esami = [(codice, voto) for codice, voto in zip(codici, voti)]
+
+            studente.set_listaesami(lista_esami)
+
+
+            
+
+        
+
             
         
 
