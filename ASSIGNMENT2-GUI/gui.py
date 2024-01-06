@@ -3,7 +3,7 @@
 [x] inserire un nuovo studente nell'archivio,
 [x] modificare i dati di uno studente,
 [x] cancellare uno studente dall'archivio,
-[ ] calcolare la media dei voti di uno studente,
+[x] calcolare la media dei voti di uno studente,
 [ ] caricare l'archivio da file,
 [ ] salvare l'archivio su file,
 [ ] uscire dall'applicazione.
@@ -39,11 +39,11 @@ class myApp:
         # Visualizza archivio
         self.pulsante_visualizzaArchivio = tk.Button(contenitore1, text="Visualizza archivio")
         self.pulsante_visualizzaArchivio.grid(row=0, column=0)
-        self.pulsante_visualizzaArchivio.bind("<Button-1>", self.finestra_visualizza_archivio)
+        self.pulsante_visualizzaArchivio.bind("<Button-1>", self.finestra_visualizzaArchivio)
         # Inserisci studente
         self.pulsante_inserisciStudente = tk.Button(contenitore1, text="Inserisci studente")
         self.pulsante_inserisciStudente.grid(row=1, column=0)
-        self.pulsante_inserisciStudente.bind("<Button-1>", self.finestra_inserisci_studente)
+        self.pulsante_inserisciStudente.bind("<Button-1>", self.finestra_inserisciStudente)
         # Modifica studente
         self.pulsante_modificaStudente = tk.Button(contenitore1, text="Modifica studente")
         self.pulsante_modificaStudente.grid(row=2, column=0)
@@ -56,6 +56,13 @@ class myApp:
         self.entry_matricola_cancellaStudente = tk.Entry(contenitore1, width=20)
         self.entry_matricola_cancellaStudente.grid(row=3, column=1)
         self.pulsante_cancellaStudente.bind("<Button-1>", self.on_pulsante_cancellaStudente) #on_pulsante_cancellaStudente serve a passare il valore della matricola da cancellare
+        # Media
+        self.pulsante_mediaStudente = tk.Button(contenitore1, text="Media studente")
+        self.pulsante_mediaStudente.grid(row=4, column=0)
+        self.entry_matricola_mediaStudente = tk.Entry(contenitore1, width=20)
+        self.entry_matricola_mediaStudente.grid(row=4, column=1)
+        self.pulsante_mediaStudente.bind("<Button-1>", self.on_pulsante_mediaStudente) #on_pulsante_mediaStudente serve a passare il valore della matricola di cui calcolare la media
+
 
     def contiene_solo_caratteri(self, campo, caratteri_validi, etichetta):
         pattern = "^[{}]+$".format(re.escape(caratteri_validi))
@@ -68,7 +75,7 @@ class myApp:
 
 
     ######### HANDLER ##########
-    def finestra_visualizza_archivio(self, event):
+    def finestra_visualizzaArchivio(self, event):
         # Creo una nuova finestra per la visualizzazione dell'archivio
         self.dialog = tk.Toplevel(self.root)
         self.dialog.title("Visualizza archivio")
@@ -82,7 +89,7 @@ class myApp:
         self.box_visualizzaArchivio.delete("1.0", tk.END)
         self.box_visualizzaArchivio.insert(tk.END, str(self.archivio)) # Uso il metodo __str__ della classe Archivio in archivio.py
 
-    def finestra_inserisci_studente(self, event):
+    def finestra_inserisciStudente(self, event):
         # Creo una nuova finestra per gestire l'inserimento di un nuovo studente
         self.dialog = tk.Toplevel(self.root)
         self.dialog.title("Inserisci studente")
@@ -176,9 +183,9 @@ class myApp:
                 messagebox.showerror("Errore", "Matricola non presente nell'archivio.")
                 return
             # Eseguo la funzione di modifica, passando il valore dell'entry come parametro
-            self.finestra_modifica_studente(int(matricola))
+            self.finestra_modificaStudente(int(matricola))
 
-    def finestra_modifica_studente(self, matricola):
+    def finestra_modificaStudente(self, matricola):
         # Creo una nuova finestra per gestire l'inserimento di un nuovo studente
         self.dialog = tk.Toplevel(self.root)
         self.dialog.title("Modifica studente con matricola " + str(matricola))
@@ -310,13 +317,26 @@ class myApp:
             if not (int(matricola) in self.archivio.get_studenti()):
                 messagebox.showerror("Errore", "Matricola non presente nell'archivio.")
                 return
-            # Eseguo la funzione di modifica, passando il valore dell'entry come parametro
+            # Eseguo la funzione di cancellazione, passando il valore dell'entry come parametro
             risposta = messagebox.askquestion("Conferma", "Cancellare lo studente con matricola " + matricola + "?", default="no")
             if risposta == "yes":
                 self.archivio.elimina(int(matricola))
                 messagebox.showinfo("Cancellazione avvenuta", "Lo studente " + matricola + " è stato cancellato correttamente.")
             else:
                 messagebox.showinfo("Cancellazione annullata", "Lo studente " + matricola + " non è stato cancellato.")
+
+    def on_pulsante_mediaStudente(self, event):
+        matricola = self.entry_matricola_mediaStudente.get()
+        if matricola is None or matricola == "":
+            messagebox.showerror("Errore", "Inserire la matricola dello studente di cui calcolare la media.")
+            return
+        if self.contiene_solo_caratteri(matricola, "1234567890", "matricola"):
+            if not (int(matricola) in self.archivio.get_studenti()):
+                messagebox.showerror("Errore", "Matricola non presente nell'archivio.")
+                return
+            # Eseguo la funzione di calcolo della media, passando il valore dell'entry come parametro
+            messagebox.showinfo("Media", "La media dello studente " + matricola + " è " + str(self.archivio.media(int(matricola))))
+
 
 
 
