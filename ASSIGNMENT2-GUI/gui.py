@@ -49,18 +49,21 @@ class myApp:
         self.pulsante_modificaStudente.grid(row=2, column=0)
         self.entry_matricola_modificaStudente = tk.Entry(contenitore1, width=20)
         self.entry_matricola_modificaStudente.grid(row=2, column=1)
+        CreateToolTip(self.entry_matricola_modificaStudente, text = 'Inserire la matricola dello studente di cui modificare i dati')
         self.pulsante_modificaStudente.bind("<Button-1>", self.on_pulsante_modificaStudente) #on_pulsante_modificaStudente serve a passare il valore della matricola da modificare
         # Cancella studente
         self.pulsante_cancellaStudente = tk.Button(contenitore1, text="Cancella studente")
         self.pulsante_cancellaStudente.grid(row=3, column=0)
         self.entry_matricola_cancellaStudente = tk.Entry(contenitore1, width=20)
         self.entry_matricola_cancellaStudente.grid(row=3, column=1)
+        CreateToolTip(self.entry_matricola_cancellaStudente, text = 'Inserire la matricola dello studente da cancellare')
         self.pulsante_cancellaStudente.bind("<Button-1>", self.on_pulsante_cancellaStudente) #on_pulsante_cancellaStudente serve a passare il valore della matricola da cancellare
         # Media
         self.pulsante_mediaStudente = tk.Button(contenitore1, text="Media studente")
         self.pulsante_mediaStudente.grid(row=4, column=0)
         self.entry_matricola_mediaStudente = tk.Entry(contenitore1, width=20)
         self.entry_matricola_mediaStudente.grid(row=4, column=1)
+        CreateToolTip(self.entry_matricola_mediaStudente, text = 'Inserire la matricola dello studente di cui calcolare la media del libretto')
         self.pulsante_mediaStudente.bind("<Button-1>", self.on_pulsante_mediaStudente) #on_pulsante_mediaStudente serve a passare il valore della matricola di cui calcolare la media
 
 
@@ -111,14 +114,19 @@ class myApp:
         # Creo i campi di input
         self.entry_cognome = tk.Entry(contenitore1, width=50)
         self.entry_cognome.grid(row=0, column=1)
+        CreateToolTip(self.entry_cognome, text = 'Inserire il cognome dello studente utilizzando solo lettere, spazi e apostrofi.')
         self.entry_nome = tk.Entry(contenitore1, width=50)
         self.entry_nome.grid(row=1, column=1)
+        CreateToolTip(self.entry_nome, text = 'Inserire il nome dello studente utilizzando solo lettere, spazi e apostrofi.')
         self.entry_matricola = tk.Entry(contenitore1, width=50)
         self.entry_matricola.grid(row=2, column=1)
+        CreateToolTip(self.entry_matricola, text = 'Inserire la matricola dello studente come numero intero positivo.')
         self.entry_esami = EntryWithPlaceholder(contenitore1, placeholder="Nel formato 544MM-30, 564GG-22, 241SS-25...",  placeholder_color='grey', width=50) # Inserire gli esami nel campo nel formato CODICE-VOTO, separati da virgola e spazio
         self.entry_esami.grid(row=3, column=1)
+        CreateToolTip(self.entry_esami, text = 'Scrivere gli esami nel formato CODICE-VOTO, separati da virgola e spazio. \nEs: 544MM-30, 564GG-22, 241SS-25')
         self.entry_note = tk.Entry(contenitore1, width=50)
-        self.entry_note.grid(row=4, column=1)        
+        self.entry_note.grid(row=4, column=1)
+        CreateToolTip(self.entry_note, text = 'Inserire le note dello studente.')         
         # Creo il pulsante per l'inserimento
         pulsante_inserisci = tk.Button(contenitore1, text="Inserisci")
         pulsante_inserisci.grid(row=5, column=1)
@@ -382,6 +390,44 @@ class EntryWithPlaceholder(tk.Entry):
         if not self.get():
             self.put_placeholder()        
 
+# Classe per mostrare un testo quando faccio hover su un bottone per dare indicazioni all'utente
+class ToolTip(object):
+    def __init__(self, widget):
+        self.widget = widget
+        self.tipwindow = None
+        self.id = None
+        self.x = self.y = 0
+
+    def showtip(self, text):
+        "Display text in tooltip window"
+        self.text = text
+        if self.tipwindow or not self.text:
+            return
+        x, y, cx, cy = self.widget.bbox("insert")
+        x = x + self.widget.winfo_rootx() + 15
+        y = y + cy + self.widget.winfo_rooty() +27
+        self.tipwindow = tw = tk.Toplevel(self.widget)
+        tw.wm_overrideredirect(1)
+        tw.wm_geometry("+%d+%d" % (x, y))
+        label = tk.Label(tw, text=self.text, justify=tk.LEFT,
+                    background="#ffffe0", relief=tk.SOLID, borderwidth=1,
+                    font=("tahoma", "8", "normal"))
+        label.pack(ipadx=1)
+
+    def hidetip(self):
+        tw = self.tipwindow
+        self.tipwindow = None
+        if tw:
+            tw.destroy()
+
+def CreateToolTip(widget, text):
+    toolTip = ToolTip(widget)
+    def enter(event):
+        toolTip.showtip(text)
+    def leave(event):
+        toolTip.hidetip()
+    widget.bind('<Enter>', enter)
+    widget.bind('<Leave>', leave)
 
 
 
