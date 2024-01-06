@@ -2,12 +2,11 @@
 [x] visualizzare il contenuto del archivio,
 [x] inserire un nuovo studente nell'archivio,
 [x] modificare i dati di uno studente,
-
-[  ] cancellare uno studente dall'archivio,
-[  ] calcolare la media dei voti di uno studente,
-[  ] caricare l'archivio da file,
-[  ] salvare l'archivio su file,
-[  ] uscire dall'applicazione.
+[x] cancellare uno studente dall'archivio,
+[ ] calcolare la media dei voti di uno studente,
+[ ] caricare l'archivio da file,
+[ ] salvare l'archivio su file,
+[ ] uscire dall'applicazione.
 '''
 
 from archivio import *
@@ -51,6 +50,12 @@ class myApp:
         self.entry_matricola_modificaStudente = tk.Entry(contenitore1, width=20)
         self.entry_matricola_modificaStudente.grid(row=2, column=1)
         self.pulsante_modificaStudente.bind("<Button-1>", self.on_pulsante_modificaStudente) #on_pulsante_modificaStudente serve a passare il valore della matricola da modificare
+        # Cancella studente
+        self.pulsante_cancellaStudente = tk.Button(contenitore1, text="Cancella studente")
+        self.pulsante_cancellaStudente.grid(row=3, column=0)
+        self.entry_matricola_cancellaStudente = tk.Entry(contenitore1, width=20)
+        self.entry_matricola_cancellaStudente.grid(row=3, column=1)
+        self.pulsante_cancellaStudente.bind("<Button-1>", self.on_pulsante_cancellaStudente) #on_pulsante_cancellaStudente serve a passare il valore della matricola da cancellare
 
     def contiene_solo_caratteri(self, campo, caratteri_validi, etichetta):
         pattern = "^[{}]+$".format(re.escape(caratteri_validi))
@@ -166,11 +171,12 @@ class myApp:
         if matricola is None or matricola == "":
             messagebox.showerror("Errore", "Inserire la matricola dello studente da modificare.")
             return
-        elif not (int(matricola) in self.archivio.get_studenti()):
-            messagebox.showerror("Errore", "Matricola non presente nell'archivio.")
-            return
-        # Eseguo la funzione di modifica, passando il valore dell'entry come parametro
-        self.finestra_modifica_studente(int(matricola))
+        if self.contiene_solo_caratteri(matricola, "1234567890", "matricola"):
+            if not (int(matricola) in self.archivio.get_studenti()):
+                messagebox.showerror("Errore", "Matricola non presente nell'archivio.")
+                return
+            # Eseguo la funzione di modifica, passando il valore dell'entry come parametro
+            self.finestra_modifica_studente(int(matricola))
 
     def finestra_modifica_studente(self, matricola):
         # Creo una nuova finestra per gestire l'inserimento di un nuovo studente
@@ -229,7 +235,6 @@ class myApp:
         pulsante_salva_modifiche = tk.Button(contenitore1, text="Salva")
         pulsante_salva_modifiche.grid(row=6, column=1)
         pulsante_salva_modifiche.bind("<Button-1>", lambda event, matricola=matricola: self.on_pulsante_salvaModifiche_wrapper(event, matricola))
-
 
     def on_pulsante_salvaModifiche_wrapper(self, event, matricola):
         self.salva_ModificheStudente(matricola)
@@ -295,6 +300,24 @@ class myApp:
             studente.set_listaesami(lista_esami)
 
             self.archivio.modifica_note(int(matricola), note)
+
+    def on_pulsante_cancellaStudente(self, event):
+        matricola = self.entry_matricola_cancellaStudente.get()
+        if matricola is None or matricola == "":
+            messagebox.showerror("Errore", "Inserire la matricola dello studente da cancellare.")
+            return
+        if self.contiene_solo_caratteri(matricola, "1234567890", "matricola"):
+            if not (int(matricola) in self.archivio.get_studenti()):
+                messagebox.showerror("Errore", "Matricola non presente nell'archivio.")
+                return
+            # Eseguo la funzione di modifica, passando il valore dell'entry come parametro
+            risposta = messagebox.askquestion("Conferma", "Cancellare lo studente con matricola " + matricola + "?", default="no")
+            if risposta == "yes":
+                self.archivio.elimina(int(matricola))
+                messagebox.showinfo("Cancellazione avvenuta", "Lo studente " + matricola + " è stato cancellato correttamente.")
+            else:
+                messagebox.showinfo("Cancellazione annullata", "Lo studente " + matricola + " non è stato cancellato.")
+
 
 
             
