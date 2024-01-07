@@ -180,16 +180,24 @@ class myApp:
             nuovo_studente = Studente("Nuovo", "Studente", 999999, [])
             nuovo_studente.set_cognome(cognome) # Il cognome e il nome saranno una stringa perché l'inserimento avviene tramite un campo di testo, quindi devo usare un controllo sui caratteri inseriti nella stringa (contiene_solo_caratteri)
             nuovo_studente.set_nome(nome)
-            nuovo_studente.set_matricola(int(matricola))
+            nuovo_studente.set_matricola(int(matricola))    
             nuovo_studente.set_listaesami(lista_esami)
-            # Inserisco lo studente nell'archivio assieme alle note 
-            self.archivio.inserisci(nuovo_studente, note)
+            # Inserisco lo studente nell'archivio assieme alle note
+            risposta = messagebox.askokcancel("Conferma", "Inserire lo studente " + str(nuovo_studente) + "?", default="cancel")
+            if risposta == True:
+                self.archivio.inserisci(nuovo_studente, note)
+                # Controllo se l'inserimento è avvenuto
+                if len(self.archivio.stud) > lunghezza_archivio:
+                    messagebox.showinfo("Inserimento avvenuto", "Lo studente è stato inserito correttamente.")
+                    #destroy???????
+                else:
+                    messagebox.showerror("Errore", "Lo studente non è stato inserito: riferirsi alla console per maggiori informazioni.")
+            
 
-        # Controllo se l'inserimento è avvenuto
-        if len(self.archivio.stud) > lunghezza_archivio:
-            messagebox.showinfo("Inserimento avvenuto", "Lo studente è stato inserito correttamente.")
-        else:
-            messagebox.showerror("Errore", "Lo studente non è stato inserito: riferirsi alla console per maggiori informazioni.")
+                
+
+
+        
 
     def on_pulsante_modificaStudente(self, event):
         matricola = self.entry_matricola_modificaStudente.get()
@@ -262,7 +270,10 @@ class myApp:
         pulsante_salva_modifiche.bind("<Button-1>", lambda event, matricola=matricola: self.on_pulsante_salvaModifiche_wrapper(event, matricola))
 
     def on_pulsante_salvaModifiche_wrapper(self, event, matricola):
-        self.salva_ModificheStudente(matricola)
+        risposta = messagebox.askokcancel("Conferma", "Salvare le modifiche allo studente con matricola " + str(matricola) + "?", default="cancel")
+        if risposta == True:
+            self.salva_ModificheStudente(matricola)
+            self.dialog.destroy()
         
     def salva_ModificheStudente(self, matricola):
         studente = self.archivio.studente(matricola)
