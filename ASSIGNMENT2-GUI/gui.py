@@ -418,11 +418,13 @@ class myApp:
         """
 
     def chiudi(self, event):
-        if messagebox.askokcancel("Chiudi", "Vuoi arrestare l'applicazione?"):
+        risposta = messagebox.askyesnocancel("Chiudi l'applicazione", "Vuoi salvare l'archivio prima di arrestare l'applicazione?", default="cancel")
+        if risposta == True:
+            self.salva_archivio(event)
             root.destroy()
-
-
-
+        elif risposta == False:
+            root.destroy()
+        
 
 
 
