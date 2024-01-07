@@ -5,14 +5,13 @@
 [x] cancellare uno studente dall'archivio,
 [x] calcolare la media dei voti di uno studente,
 [x] caricare l'archivio da file,
-[ ] salvare l'archivio su file,
+[x] salvare l'archivio su file,
 [ ] uscire dall'applicazione.
 '''
 
 from archivio import *
 import tkinter as tk
 from tkinter import messagebox
-from tkinter.messagebox import showinfo
 import re 
 from tkinter import filedialog as fd # Per il caricamento e il salvataggio dell'archivio da file
 
@@ -34,7 +33,7 @@ class myApp:
         self.archivio.inserisci(stud1, "nota1")
         self.archivio.inserisci(stud2, "nota2")
         self.archivio.inserisci(stud3, "nota3")
-        self.archivio.inserisci(stud4, "nota4")
+        self.archivio.inserisci(stud4)
         self.archivio.inserisci(stud5, "nota5")
 
         # Creo i bottoni
@@ -67,12 +66,25 @@ class myApp:
         self.entry_matricola_mediaStudente.grid(row=4, column=1)
         CreateToolTip(self.entry_matricola_mediaStudente, text = 'Inserire la matricola dello studente di cui calcolare la media del libretto')
         self.pulsante_mediaStudente.bind("<Button-1>", self.on_pulsante_mediaStudente) #on_pulsante_mediaStudente serve a passare il valore della matricola di cui calcolare la media
-        # Caricare l'archivio da file
+        # Carica l'archivio da file
         self.pulsante_caricaArchivio = tk.Button(contenitore1, text="Carica archivio da file")
         self.pulsante_caricaArchivio.grid(row=5, column=0)
-        self.pulsante_caricaArchivio.bind("<Button-1>", self.seleziona_file)
+        self.pulsante_caricaArchivio.bind("<Button-1>", self.carica_archivio)
+        # Salva archivio su file
+        self.pulsante_salvaArchivio = tk.Button(contenitore1, text="Salva archivio su file")
+        self.pulsante_salvaArchivio.grid(row=6, column=0)
+        self.pulsante_salvaArchivio.bind("<Button-1>", self.salva_archivio)
+        # Salva archivio su file: versione che sfrutta il metodo salva() in archivio.py
+        # Utilizzare solo togliendo il commento al metodo salva_archivio2 e commentando la riga del binding del pulsante_salvaArchivio con salva_archivio
+        """
+        self.pulsante_salvaArchivio.bind("<Button-1>", self.salva_archivio2)
+        self.entry_salvaArchivio2 = tk.Entry(contenitore1, width=20)
+        self.entry_salvaArchivio2.grid(row=6, column=1)
+        CreateToolTip(self.entry_salvaArchivio2, text = "Scrivere il nome e l'estensione del file da creare in cui salvare l'archivio. \nEs: filename.txt")
+        """
 
-
+        
+    ######### METODI UTILI sfruttati dagli handler ##########
     def contiene_solo_caratteri(self, campo, caratteri_validi, etichetta):
         pattern = "^[{}]+$".format(re.escape(caratteri_validi))
         if (re.match(pattern, campo)):
@@ -351,7 +363,7 @@ class myApp:
             # Eseguo la funzione di calcolo della media, passando il valore dell'entry come parametro
             messagebox.showinfo("Media", "La media dello studente " + matricola + " è " + str(self.archivio.media(int(matricola))))
 
-    def seleziona_file(self, event):
+    def carica_archivio(self, event):
         filetypes = (
         ('text files', '*.txt'),
         ('All files', '*.*')
@@ -382,15 +394,43 @@ class myApp:
                     messagebox.showerror("Errore", "L'archivio non è stato aggiornato: riferirsi alla console per maggiori informazioni.")
             else:
                 messagebox.showinfo("Caricamento annullato", "L'archivio non è stato caricato.")
+    
+    def salva_archivio(self, event):
+        # Finestra di salvataggio di un file classica, la sovrascrizione e l'annullamento sono gestite automaticamente
+        path = fd.asksaveasfilename(defaultextension=".txt", filetypes=[("File di testo", "*.txt")])
+        if path is None or path == "":
+            messagebox.showinfo("Caricamento annullato", "Nessun file selezionato.")
+            return
+        else:
+            filename = path.split('/')[-1]  # Voglio solo il nome del file, non il path completo
+            with open(path, "w") as file:
+                contenuto = str(self.archivio)
+                file.write(contenuto)
+            # Messaggio di conferma
+            tk.messagebox.showinfo("Salvataggio completato", "L'archivio è stato salvato correttamente nel file " + filename + ".")
+    
+    # Dato che in archivio.py è stato implementato il metodo salva(), potrei usare questo metodo per salvare l'archivio, ma ho preferito sfruttare asksaveasfilename di tkinter perché è più sicura e completa.
+    # Tuttavia, di seguito si trova il codice per salvare l'archivio usando il metodo salva() di archivio.py, commentato.
+    # Ricordarsi di adattare i pulsanti e i binding nel metodo __init__ di myApp.
+    """
+    def salva_archivio2(self, event):
+        filename = self.entry_salvaArchivio2.get()
+        if filename is None or filename == "":
+            messagebox.showerror("Errore", "Inserire il nome del file in cui salvare l'archivio.")
+            return
+        else:
+            caratteri_validi = "qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM1234567890.-_()"
+            if self.contiene_solo_caratteri(filename, caratteri_validi, "nome file"):
+                self.archivio.salva(filename)
+                messagebox.showinfo("Salvataggio completato", "L'archivio è stato salvato correttamente nel file " + filename + ".")
+        """
 
-            
 
-        
 
-            
-        
 
-        
+
+
+
 
 # Dato che l'inserimento degli esami per la registrazione di un nuovo studente richiede che gli esami siano inseriti in un formato specifico, ho deciso di creare una casella di testo con un placeholder che mostra un esempio di come inserire gli esami.
 class EntryWithPlaceholder(tk.Entry):
