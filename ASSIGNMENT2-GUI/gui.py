@@ -1,14 +1,3 @@
-'''
-[x] visualizzare il contenuto del archivio,
-[x] inserire un nuovo studente nell'archivio,
-[x] modificare i dati di uno studente,
-[x] cancellare uno studente dall'archivio,
-[x] calcolare la media dei voti di uno studente,
-[x] caricare l'archivio da file,
-[x] salvare l'archivio su file,
-[ ] uscire dall'applicazione.
-'''
-
 from archivio import *
 import tkinter as tk
 from tkinter import messagebox
@@ -82,7 +71,10 @@ class myApp:
         self.entry_salvaArchivio2.grid(row=6, column=1)
         CreateToolTip(self.entry_salvaArchivio2, text = "Scrivere il nome e l'estensione del file da creare in cui salvare l'archivio. \nEs: filename.txt")
         """
-
+        # Chiudi
+        self.pulsante_chiudi = tk.Button(contenitore1, text="Chiudi")
+        self.pulsante_chiudi.grid(row=0, column=3)
+        self.pulsante_chiudi.bind("<Button-1>", self.chiudi)
         
     ######### METODI UTILI sfruttati dagli handler ##########
     def contiene_solo_caratteri(self, campo, caratteri_validi, etichetta):
@@ -425,6 +417,9 @@ class myApp:
                 messagebox.showinfo("Salvataggio completato", "L'archivio è stato salvato correttamente nel file " + filename + ".")
         """
 
+    def chiudi(self, event):
+        if messagebox.askokcancel("Chiudi", "Vuoi arrestare l'applicazione?"):
+            root.destroy()
 
 
 
