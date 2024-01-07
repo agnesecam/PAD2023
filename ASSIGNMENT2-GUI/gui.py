@@ -4,7 +4,7 @@
 [x] modificare i dati di uno studente,
 [x] cancellare uno studente dall'archivio,
 [x] calcolare la media dei voti di uno studente,
-[ ] caricare l'archivio da file,
+[x] caricare l'archivio da file,
 [ ] salvare l'archivio su file,
 [ ] uscire dall'applicazione.
 '''
@@ -12,7 +12,9 @@
 from archivio import *
 import tkinter as tk
 from tkinter import messagebox
+from tkinter.messagebox import showinfo
 import re 
+from tkinter import filedialog as fd # Per il caricamento e il salvataggio dell'archivio da file
 
 class myApp:
     def __init__(self, root):
@@ -65,6 +67,10 @@ class myApp:
         self.entry_matricola_mediaStudente.grid(row=4, column=1)
         CreateToolTip(self.entry_matricola_mediaStudente, text = 'Inserire la matricola dello studente di cui calcolare la media del libretto')
         self.pulsante_mediaStudente.bind("<Button-1>", self.on_pulsante_mediaStudente) #on_pulsante_mediaStudente serve a passare il valore della matricola di cui calcolare la media
+        # Caricare l'archivio da file
+        self.pulsante_caricaArchivio = tk.Button(contenitore1, text="Carica archivio da file")
+        self.pulsante_caricaArchivio.grid(row=5, column=0)
+        self.pulsante_caricaArchivio.bind("<Button-1>", self.seleziona_file)
 
 
     def contiene_solo_caratteri(self, campo, caratteri_validi, etichetta):
@@ -345,8 +351,37 @@ class myApp:
             # Eseguo la funzione di calcolo della media, passando il valore dell'entry come parametro
             messagebox.showinfo("Media", "La media dello studente " + matricola + " è " + str(self.archivio.media(int(matricola))))
 
-
-
+    def seleziona_file(self, event):
+        filetypes = (
+        ('text files', '*.txt'),
+        ('All files', '*.*')
+        )
+        # Apro una finestra di dialogo per selezionare il file (non è possibile selezionare più di un file, quindi non occorre che gestisca questo caso)
+        path = fd.askopenfilename(
+            title="Seleziona il file contenente l'archivio",
+            initialdir='/',
+            filetypes=filetypes)
+        # Apro una messagebox che mostra il nome del file selezionato
+        if path is None or path == "":
+            messagebox.showinfo("Caricamento annullato", "Nessun file selezionato.")
+            return
+        else:
+            filename = path.split('/')[-1]  # Voglio solo il nome del file, non il path completo
+            risposta = messagebox.askquestion("Conferma", "Caricare l'archivio dal file " + filename + "?", default="no")
+            if risposta == "yes":
+                # Carico l'archivio dal file selezionato
+                lunghezza_archivio = len(self.archivio.stud)
+                try:    # Se viene scelto un file che può essere interpretato da archivio.py come archivio, viene caricato, altrimenti viene mostrato il messaggio di errore seguente e annullata l'azione
+                    self.archivio.carica(filename)
+                except ValueError:
+                    messagebox.showerror("Errore", "Il file selezionato non è un archivio nel formato corretto. Caricamento non riuscito.")
+                    return
+                if lunghezza_archivio < len(self.archivio.stud):
+                    messagebox.showinfo("Caricamento avvenuto", "L'archivio è stato caricato correttamente.")
+                else:
+                    messagebox.showerror("Errore", "L'archivio non è stato aggiornato: riferirsi alla console per maggiori informazioni.")
+            else:
+                messagebox.showinfo("Caricamento annullato", "L'archivio non è stato caricato.")
 
             
 
