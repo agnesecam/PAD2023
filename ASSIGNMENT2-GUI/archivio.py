@@ -68,12 +68,16 @@ class Studente:
         print("Nome modificato correttamente")
 
     def set_matricola(self, matricola): #TODO controlla che non possa farlo con if else
-        if not isinstance(matricola, int) or matricola <= 0:
+        if not isinstance(matricola, int):
             raise TypeError("La matricola deve essere un numero intero positivo")
+        elif matricola <= 0:
+            raise ValueError("La matricola deve essere un numero intero positivo")
         self.matricola = matricola
         print("Matricola modificata correttamente")
 
-    def set_listaesami(self, listaesami): 
+    def set_listaesami(self, listaesami):
+        if listaesami is None:
+            listaesami = [] # Serve nella GUI per creare un'istanza della classe Studente da modificare durante l'inserimento di uno studente, altrimenti avrei un errore
         if not isinstance(listaesami, list):
             raise TypeError("La lista degli esami deve essere una lista")
         for esame in listaesami:
@@ -340,10 +344,6 @@ class Archivio:
             print("ERRORE durante il caricamento del file " + str(nomefile) + ":" + str(e))
             return False
         
-    #Usata nella GUI    
-    def lunghezza_archivio(self):
-        return len(self.stud)
-
 
 
 
