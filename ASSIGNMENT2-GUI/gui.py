@@ -1,6 +1,7 @@
 from archivio import *
 import tkinter as tk
 from tkinter import messagebox
+from tkinter import PhotoImage
 import re 
 from tkinter import filedialog as fd # Per il caricamento e il salvataggio dell'archivio da file
 
@@ -10,6 +11,7 @@ class myApp:
         # Creo il frame contenitore
         contenitore1 = tk.Frame(self.root)
         contenitore1.pack()
+        contenitore1.config(background='#FAE5E8')
 
         self.archivio = Archivio()
         # Creo alcuni studenti di esempio
@@ -27,53 +29,55 @@ class myApp:
 
         # Creo i bottoni
         # Visualizza archivio
-        self.pulsante_visualizzaArchivio = tk.Button(contenitore1, text="Visualizza archivio")
-        self.pulsante_visualizzaArchivio.grid(row=0, column=0)
+        self.pulsante_visualizzaArchivio = tk.Button(contenitore1, text="Visualizza archivio", background="#F7CAD0", foreground="#000000", border=0, width=18)
+        self.pulsante_visualizzaArchivio.grid(row=1, column=0, padx=10, pady=2)
         self.pulsante_visualizzaArchivio.bind("<Button-1>", self.finestra_visualizzaArchivio)
         # Inserisci studente
-        self.pulsante_inserisciStudente = tk.Button(contenitore1, text="Inserisci studente")
-        self.pulsante_inserisciStudente.grid(row=1, column=0)
+        self.pulsante_inserisciStudente = tk.Button(contenitore1, text="Inserisci studente", background="#F9BEC7", foreground="#000000", border=0, width=18)
+        self.pulsante_inserisciStudente.grid(row=2, column=0, padx=10, pady=2)
         self.pulsante_inserisciStudente.bind("<Button-1>", self.finestra_inserisciStudente)
         # Modifica studente
-        self.pulsante_modificaStudente = tk.Button(contenitore1, text="Modifica studente")
-        self.pulsante_modificaStudente.grid(row=2, column=0)
-        self.entry_matricola_modificaStudente = tk.Entry(contenitore1, width=20)
-        self.entry_matricola_modificaStudente.grid(row=2, column=1)
+        self.pulsante_modificaStudente = tk.Button(contenitore1, text="Modifica studente", background="#FBB1BD", foreground="#000000", border=0, width=18)
+        self.pulsante_modificaStudente.grid(row=3, column=0, padx=10, pady=2)
+        self.entry_matricola_modificaStudente = tk.Entry(contenitore1, width=18, border=0)
+        self.entry_matricola_modificaStudente.grid(row=3, column=1)
         CreateToolTip(self.entry_matricola_modificaStudente, text = 'Inserire la matricola dello studente di cui modificare i dati')
         self.pulsante_modificaStudente.bind("<Button-1>", self.on_pulsante_modificaStudente) #on_pulsante_modificaStudente serve a passare il valore della matricola da modificare
         # Cancella studente
-        self.pulsante_cancellaStudente = tk.Button(contenitore1, text="Cancella studente")
-        self.pulsante_cancellaStudente.grid(row=3, column=0)
-        self.entry_matricola_cancellaStudente = tk.Entry(contenitore1, width=20)
-        self.entry_matricola_cancellaStudente.grid(row=3, column=1)
+        self.pulsante_cancellaStudente = tk.Button(contenitore1, text="Cancella studente", background="#FF99AC", foreground="#000000", border=0, width=18)
+        self.pulsante_cancellaStudente.grid(row=4, column=0, padx=10, pady=2)
+        self.entry_matricola_cancellaStudente = tk.Entry(contenitore1, width=18, border=0)
+        self.entry_matricola_cancellaStudente.grid(row=4, column=1)
         CreateToolTip(self.entry_matricola_cancellaStudente, text = 'Inserire la matricola dello studente da cancellare')
         self.pulsante_cancellaStudente.bind("<Button-1>", self.on_pulsante_cancellaStudente) #on_pulsante_cancellaStudente serve a passare il valore della matricola da cancellare
         # Media
-        self.pulsante_mediaStudente = tk.Button(contenitore1, text="Media studente")
-        self.pulsante_mediaStudente.grid(row=4, column=0)
-        self.entry_matricola_mediaStudente = tk.Entry(contenitore1, width=20)
-        self.entry_matricola_mediaStudente.grid(row=4, column=1)
+        self.pulsante_mediaStudente = tk.Button(contenitore1, text="Media studente", background="#FF85A1", foreground="#000000", border=0, width=18)
+        self.pulsante_mediaStudente.grid(row=5, column=0, padx=10, pady=2)
+        self.entry_matricola_mediaStudente = tk.Entry(contenitore1, width=18, border=0)
+        self.entry_matricola_mediaStudente.grid(row=5, column=1)
         CreateToolTip(self.entry_matricola_mediaStudente, text = 'Inserire la matricola dello studente di cui calcolare la media del libretto')
         self.pulsante_mediaStudente.bind("<Button-1>", self.on_pulsante_mediaStudente) #on_pulsante_mediaStudente serve a passare il valore della matricola di cui calcolare la media
         # Carica l'archivio da file
-        self.pulsante_caricaArchivio = tk.Button(contenitore1, text="Carica archivio da file")
-        self.pulsante_caricaArchivio.grid(row=5, column=0)
+        self.pulsante_caricaArchivio = tk.Button(contenitore1, text="Carica archivio da file", background="#FF7096", foreground="#000000", border=0, width=18)
+        self.pulsante_caricaArchivio.grid(row=6, column=0, padx=10, pady=2)
         self.pulsante_caricaArchivio.bind("<Button-1>", self.carica_archivio)
         # Salva archivio su file
-        self.pulsante_salvaArchivio = tk.Button(contenitore1, text="Salva archivio su file")
-        self.pulsante_salvaArchivio.grid(row=6, column=0)
+        self.pulsante_salvaArchivio = tk.Button(contenitore1, text="Salva archivio su file", background="#FF5C8A", foreground="#000000", border=0, width=18)
+        self.pulsante_salvaArchivio.grid(row=7, column=0, padx=10, pady=2)
         self.pulsante_salvaArchivio.bind("<Button-1>", self.salva_archivio)
         # Salva archivio su file: versione che sfrutta il metodo salva() in archivio.py
         # Utilizzare solo togliendo il commento al metodo salva_archivio2 e commentando la riga del binding del pulsante_salvaArchivio con salva_archivio
         """
         self.pulsante_salvaArchivio.bind("<Button-1>", self.salva_archivio2)
-        self.entry_salvaArchivio2 = tk.Entry(contenitore1, width=20)
+        self.entry_salvaArchivio2 = tk.Entry(contenitore1, width=18)
         self.entry_salvaArchivio2.grid(row=6, column=1)
         CreateToolTip(self.entry_salvaArchivio2, text = "Scrivere il nome e l'estensione del file da creare in cui salvare l'archivio. \nEs: filename.txt")
         """
         # Chiudi
-        self.pulsante_chiudi = tk.Button(contenitore1, text="Chiudi")
-        self.pulsante_chiudi.grid(row=0, column=3)
+        self.immagineX = tk.PhotoImage(file="immagineX.png", width=20, height=20)
+        self.pulsante_chiudi = tk.Button(contenitore1, image=self.immagineX, text="Chiudi", background="#FAE5E8", activebackground="#FAE5E8", border=0, width=50)
+        self.pulsante_chiudi.grid(row=0, column=2, padx=10, pady=2)
+        CreateToolTip(self.pulsante_chiudi, text = "Chiudi l'applicazione")
         self.pulsante_chiudi.bind("<Button-1>", self.chiudi)
         
     ######### METODI UTILI sfruttati dagli handler ##########
@@ -110,40 +114,42 @@ class myApp:
         # Creo una nuova finestra per gestire l'inserimento di un nuovo studente
         self.dialog = tk.Toplevel(self.root)
         self.dialog.title("Inserisci studente")
-        self.dialog.geometry("400x300")
+        self.dialog.geometry("400x170")
         # Creo il frame contenitore
         contenitore1 = tk.Frame(self.dialog)
         contenitore1.pack()
+        contenitore1.config(background='#FAE5E8')
+        self.dialog.config(background='#FAE5E8')
         # Creo le etichette per i campi di input
-        self.label_cognome = tk.Label(contenitore1, text="Cognome")
-        self.label_cognome.grid(row=0, column=0)
-        self.label_nome = tk.Label(contenitore1, text="Nome")
-        self.label_nome.grid(row=1, column=0)
-        self.label_matricola = tk.Label(contenitore1, text="Matricola")
-        self.label_matricola.grid(row=2, column=0)
-        self.label_esami = tk.Label(contenitore1, text="Esami")
-        self.label_esami.grid(row=3, column=0)
-        self.label_note = tk.Label(contenitore1, text="Note")
-        self.label_note.grid(row=4, column=0)
+        self.label_cognome = tk.Label(contenitore1, text="Cognome", background='#FAE5E8')
+        self.label_cognome.grid(row=0, column=0, pady=(8,2))
+        self.label_nome = tk.Label(contenitore1, text="Nome", background='#FAE5E8')
+        self.label_nome.grid(row=1, column=0, pady=2)
+        self.label_matricola = tk.Label(contenitore1, text="Matricola", background='#FAE5E8')
+        self.label_matricola.grid(row=2, column=0, pady=2)
+        self.label_esami = tk.Label(contenitore1, text="Esami", background='#FAE5E8')
+        self.label_esami.grid(row=3, column=0, pady=2)
+        self.label_note = tk.Label(contenitore1, text="Note", background='#FAE5E8')
+        self.label_note.grid(row=4, column=0, pady=2)
         # Creo i campi di input
-        self.entry_cognome = tk.Entry(contenitore1, width=50)
-        self.entry_cognome.grid(row=0, column=1)
+        self.entry_cognome = tk.Entry(contenitore1, width=50, border=0)
+        self.entry_cognome.grid(row=0, column=1, pady=(8,2))
         CreateToolTip(self.entry_cognome, text = 'Inserire il cognome dello studente utilizzando solo lettere, spazi e apostrofi.')
-        self.entry_nome = tk.Entry(contenitore1, width=50)
-        self.entry_nome.grid(row=1, column=1)
+        self.entry_nome = tk.Entry(contenitore1, width=50, border=0)
+        self.entry_nome.grid(row=1, column=1, pady=2)
         CreateToolTip(self.entry_nome, text = 'Inserire il nome dello studente utilizzando solo lettere, spazi e apostrofi.')
-        self.entry_matricola = tk.Entry(contenitore1, width=50)
-        self.entry_matricola.grid(row=2, column=1)
+        self.entry_matricola = tk.Entry(contenitore1, width=50, border=0)
+        self.entry_matricola.grid(row=2, column=1, pady=2)
         CreateToolTip(self.entry_matricola, text = 'Inserire la matricola dello studente come numero intero positivo.')
-        self.entry_esami = EntryWithPlaceholder(contenitore1, placeholder="Nel formato 544MM-30, 564GG-22, 241SS-25...",  placeholder_color='grey', width=50) # Inserire gli esami nel campo nel formato CODICE-VOTO, separati da virgola e spazio
-        self.entry_esami.grid(row=3, column=1)
+        self.entry_esami = EntryWithPlaceholder(contenitore1, placeholder="Nel formato 544MM-30, 564GG-22, 241SS-25...",  placeholder_color='grey', width=50, border=0) # Inserire gli esami nel campo nel formato CODICE-VOTO, separati da virgola e spazio
+        self.entry_esami.grid(row=3, column=1, pady=2)
         CreateToolTip(self.entry_esami, text = 'Scrivere gli esami nel formato CODICE-VOTO, separati da virgola e spazio. \nEs: 544MM-30, 564GG-22, 241SS-25')
-        self.entry_note = tk.Entry(contenitore1, width=50)
-        self.entry_note.grid(row=4, column=1)
+        self.entry_note = tk.Entry(contenitore1, width=50, border=0)
+        self.entry_note.grid(row=4, column=1, pady=2)
         CreateToolTip(self.entry_note, text = 'Inserire le note dello studente.')         
         # Creo il pulsante per l'inserimento
-        pulsante_inserisci = tk.Button(contenitore1, text="Inserisci")
-        pulsante_inserisci.grid(row=5, column=1)
+        pulsante_inserisci = tk.Button(contenitore1, text="Inserisci", background="#F7CAD0", border=0)
+        pulsante_inserisci.grid(row=5, column=1, pady=5)
         pulsante_inserisci.bind("<Button-1>", self.inserimento_studente)
 
 
@@ -170,7 +176,7 @@ class myApp:
         if self.contiene_solo_caratteri(cognome, chars_nomecognome, "cognome") and self.contiene_solo_caratteri(nome, chars_nomecognome, "nome") and self.contiene_solo_caratteri(matricola, numeri, "matricola"):
             # Se il campo esami non è stato completato lista_esami rimane una lista vuota
             if not (input_esami is None or input_esami == "" or input_esami == self.entry_esami.placeholder): #Dato che ho inserito i placeholder devo considerare che esami_input sia uguale al placeholder            
-                # Estrapolo il codice e il voto di ciascun esame inserito nel campo, e li aggiungo come tupla alla lista_esami
+                # Estrapolo il codice e il voto di ciascun esame inserito nel campo, e li aggiungo come tupla alla lista_esami                
                 for esame in input_esami.split(','):
                         esame = esame.strip().split('-')
                         if esame and len(esame) == 2:
@@ -179,8 +185,8 @@ class myApp:
                             lista_esami.append((codice, voto))
                         else:
                             messagebox.showerror("Errore", "Inserire gli esami nel formato CODICE-VOTO, separati da virgola e spazio. Es: 544MM-30, 564GG-22, 241SS-25")
-                            return # Esco dalla funzione inserimento_studente altrimenti lo studente viene inserito con esami vuoti
-            
+                            return 
+
             # Creo un nuovo studente di esempio per poter usare i metodi setter
             nuovo_studente = Studente("Nuovo", "Studente", 999999, [])
             nuovo_studente.set_cognome(cognome) # Il cognome e il nome saranno una stringa perché l'inserimento avviene tramite un campo di testo, quindi devo usare un controllo sui caratteri inseriti nella stringa (contiene_solo_caratteri)
@@ -196,7 +202,9 @@ class myApp:
                     messagebox.showinfo("Inserimento avvenuto", "Lo studente è stato inserito correttamente.")
                     self.chiudi_finestra()
                 else:
-                    messagebox.showerror("Errore", "Lo studente non è stato inserito: riferirsi alla console per maggiori informazioni.")
+                    messagebox.showerror("Errore", "Inserimento non avvenuto: studente già presente nell'archivio.")
+                    return
+                    
             
 
     def on_pulsante_modificaStudente(self, event):
@@ -206,6 +214,7 @@ class myApp:
         elif self.contiene_solo_caratteri(matricola, "1234567890", "matricola"):
             if not (int(matricola) in self.archivio.get_studenti()):
                 messagebox.showerror("Errore", "Matricola non presente nell'archivio.")
+                return
             # Eseguo la funzione di modifica, passando il valore dell'entry come parametro
             self.finestra_modificaStudente(int(matricola))
 
