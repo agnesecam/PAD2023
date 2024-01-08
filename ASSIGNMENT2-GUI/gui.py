@@ -1,17 +1,18 @@
 from archivio import *
 import tkinter as tk
 from tkinter import messagebox
-from tkinter import PhotoImage
+from tkinter import PhotoImage # Per il bottone Chiudi
 import re 
 from tkinter import filedialog as fd # Per il caricamento e il salvataggio dell'archivio da file
 
 class myApp:
     def __init__(self, root):
         self.root = root
+        root.config(background='#FAE5E8')
         # Creo il frame contenitore
         contenitore1 = tk.Frame(self.root)
         contenitore1.pack()
-        contenitore1.config(background='#FAE5E8')
+        contenitore1.config(background='#FAE5E8', pady=20)
 
         self.archivio = Archivio()
         # Creo alcuni studenti di esempio
@@ -32,6 +33,7 @@ class myApp:
         self.pulsante_visualizzaArchivio = tk.Button(contenitore1, text="Visualizza archivio", background="#F7CAD0", foreground="#000000", border=0, width=18)
         self.pulsante_visualizzaArchivio.grid(row=1, column=0, padx=10, pady=2)
         self.pulsante_visualizzaArchivio.bind("<Button-1>", self.finestra_visualizzaArchivio)
+        self.pulsante_visualizzaArchivio.focus()
         # Inserisci studente
         self.pulsante_inserisciStudente = tk.Button(contenitore1, text="Inserisci studente", background="#F9BEC7", foreground="#000000", border=0, width=18)
         self.pulsante_inserisciStudente.grid(row=2, column=0, padx=10, pady=2)
@@ -99,15 +101,16 @@ class myApp:
         # Creo una nuova finestra per la visualizzazione dell'archivio
         self.dialog = tk.Toplevel(self.root)
         self.dialog.title("Visualizza archivio")
+        self.dialog.config(background='#FAE5E8')
 
         # Creo il frame contenitore
         contenitore1 = tk.Frame(self.dialog)  
         contenitore1.pack()
         # Creo la textbox
-        self.box_visualizzaArchivio = tk.Text(contenitore1, width=90, height=10)
+        self.box_visualizzaArchivio = tk.Text(contenitore1, width=90, height=10, background='#FAE5E8', border=0, font=("Arial", 9), pady=10, padx=10)
         self.box_visualizzaArchivio.pack()
         self.box_visualizzaArchivio.delete("1.0", tk.END)
-        self.box_visualizzaArchivio.insert(tk.END, str(self.archivio)) # Uso il metodo __str__ della classe Archivio in archivio.py
+        self.box_visualizzaArchivio.insert(tk.END, str(self.archivio))
 
 
     def finestra_inserisciStudente(self, event):
@@ -134,13 +137,14 @@ class myApp:
         # Creo i campi di input
         self.entry_cognome = tk.Entry(contenitore1, width=50, border=0)
         self.entry_cognome.grid(row=0, column=1, pady=(8,2))
+        self.entry_cognome.focus()
         CreateToolTip(self.entry_cognome, text = 'Inserire il cognome dello studente utilizzando solo lettere, spazi e apostrofi.')
         self.entry_nome = tk.Entry(contenitore1, width=50, border=0)
         self.entry_nome.grid(row=1, column=1, pady=2)
         CreateToolTip(self.entry_nome, text = 'Inserire il nome dello studente utilizzando solo lettere, spazi e apostrofi.')
-        self.entry_matricola = tk.Entry(contenitore1, width=50, border=0)
+        self.entry_matricola = tk.Entry(contenitore1, width=50, border=0) 
         self.entry_matricola.grid(row=2, column=1, pady=2)
-        CreateToolTip(self.entry_matricola, text = 'Inserire la matricola dello studente come numero intero positivo.')
+        CreateToolTip(self.entry_matricola, text = 'Inserire la matricola dello studente come numero intero positivo.') 
         self.entry_esami = EntryWithPlaceholder(contenitore1, placeholder="Nel formato 544MM-30, 564GG-22, 241SS-25...",  placeholder_color='grey', width=50, border=0) # Inserire gli esami nel campo nel formato CODICE-VOTO, separati da virgola e spazio
         self.entry_esami.grid(row=3, column=1, pady=2)
         CreateToolTip(self.entry_esami, text = 'Scrivere gli esami nel formato CODICE-VOTO, separati da virgola e spazio. \nEs: 544MM-30, 564GG-22, 241SS-25')
@@ -151,7 +155,6 @@ class myApp:
         pulsante_inserisci = tk.Button(contenitore1, text="Inserisci", background="#F7CAD0", border=0)
         pulsante_inserisci.grid(row=5, column=1, pady=5)
         pulsante_inserisci.bind("<Button-1>", self.inserimento_studente)
-
 
     def inserimento_studente(self, event):
         # Variabile per controllare sia avvenuto l'effettivo inserimento
@@ -224,9 +227,11 @@ class myApp:
         self.dialog = tk.Toplevel(self.root)
         self.dialog.title("Modifica studente con matricola " + str(matricola))
         self.dialog.geometry("400x300")
+        self.dialog.config(background='#FAE5E8')
         # Creo il frame contenitore
         contenitore1 = tk.Frame(self.dialog)
         contenitore1.pack()
+        contenitore1.config(background='#FAE5E8')
 
         # Recupero i vecchi dati dello studente
         cognome_vecchio = self.archivio.studente(matricola).get_cognome()
@@ -236,43 +241,44 @@ class myApp:
 
         
         # Creo le label per i campi di input
-        self.label_cognome_nuovo = tk.Label(contenitore1, text="Cognome")
-        self.label_cognome_nuovo.grid(row=0, column=0)
-        self.label_nome_nuovo = tk.Label(contenitore1, text="Nome")
-        self.label_nome_nuovo.grid(row=1, column=0)
-        self.label_matricola = tk.Label(contenitore1, text="Matricola")
-        self.label_matricola.grid(row=2, column=0)
-        self.label_esami_nuovi = tk.Label(contenitore1, text="Esami")
-        self.label_esami_nuovi.grid(row=3, column=0)
-        self.label_note_nuove = tk.Label(contenitore1, text="Note")
-        self.label_note_nuove.grid(row=4, column=0)
+        self.label_cognome_nuovo = tk.Label(contenitore1, text="Cognome", background='#FAE5E8')
+        self.label_cognome_nuovo.grid(row=0, column=0, pady=(8,2))
+        self.label_nome_nuovo = tk.Label(contenitore1, text="Nome", background='#FAE5E8')
+        self.label_nome_nuovo.grid(row=1, column=0, pady=2)
+        self.label_matricola = tk.Label(contenitore1, text="Matricola", background='#FAE5E8')
+        self.label_matricola.grid(row=2, column=0, pady=2)
+        self.label_esami_nuovi = tk.Label(contenitore1, text="Esami", background='#FAE5E8')
+        self.label_esami_nuovi.grid(row=3, column=0, pady=2)
+        self.label_note_nuove = tk.Label(contenitore1, text="Note", background='#FAE5E8')
+        self.label_note_nuove.grid(row=4, column=0, pady=2)
         # Creo i campi di input
-        self.entry_cognome = tk.Entry(contenitore1, width=50)
-        self.entry_cognome.grid(row=0, column=1)
+        self.entry_cognome = tk.Entry(contenitore1, width=50, border=0)
+        self.entry_cognome.grid(row=0, column=1, pady=2)
+        self.entry_cognome.focus()
         self.entry_cognome.delete(0, tk.END)
         self.entry_cognome.insert(0, cognome_vecchio)
-        self.entry_nome = tk.Entry(contenitore1, width=50)
-        self.entry_nome.grid(row=1, column=1)
+        self.entry_nome = tk.Entry(contenitore1, width=50, border=0)
+        self.entry_nome.grid(row=1, column=1, pady=2)
         self.entry_nome.delete(0, tk.END)
         self.entry_nome.insert(0, nome_vecchio)
-        self.entry_esami = tk.Entry(contenitore1, width=50)
+        self.entry_esami = tk.Entry(contenitore1, width=50, border=0)
         CreateToolTip(self.entry_esami, text = "Scrivere gli esami nel formato CODICE-VOTO, separati da virgola e spazio o come lista di tuple. \nEs: 544MM-30, 564GG-22, 241SS-25\nEs: [('544MM'-30), ('564GG'-22), ('241SS'-25)]")
-        self.entry_esami.grid(row=3, column=1)
+        self.entry_esami.grid(row=3, column=1, pady=2)
         self.entry_esami.delete(0, tk.END)
         self.entry_esami.insert(0, str(esami_vecchi))
-        self.entry_note = tk.Entry(contenitore1, width=50)            
-        self.entry_note.grid(row=4, column=1)
+        self.entry_note = tk.Entry(contenitore1, width=50, border=0)            
+        self.entry_note.grid(row=4, column=1, pady=2)
         self.entry_note.delete(0, tk.END)
         self.entry_note.insert(0, note_vecchie)         
         #La matricola non sarà modificabile, quindi uso una casella di testo con lo stato disabilitato
-        self.readOnlyText = tk.Text(contenitore1, width=37, height=1)
+        self.readOnlyText = tk.Text(contenitore1, width=40, height=1, border=0, font=("Arial", 9), background='#FAE5E8')
         self.readOnlyText.insert(1.0, matricola)
         self.readOnlyText.configure(state="disabled")
-        self.readOnlyText.grid(row=2, column=1)
+        self.readOnlyText.grid(row=2, column=1, pady=2)
 
         # Creo il pulsante per l'inserimento
         pulsante_salva_modifiche = tk.Button(contenitore1, text="Salva")
-        pulsante_salva_modifiche.grid(row=6, column=1)
+        pulsante_salva_modifiche.grid(row=6, column=1, pady=2)
         pulsante_salva_modifiche.bind("<Button-1>", lambda event, matricola=matricola: self.salvaModifiche(event, matricola))
 
 
