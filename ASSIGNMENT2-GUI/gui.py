@@ -112,6 +112,7 @@ class myApp:
         self.box_visualizzaArchivio.delete("1.0", tk.END)
         self.box_visualizzaArchivio.insert(tk.END, str(self.archivio))
 
+
     # Inserisci studente
     def finestra_inserisciStudente(self, event):
         # Creo una nuova finestra per gestire l'inserimento di un nuovo studente
@@ -209,6 +210,7 @@ class myApp:
                     messagebox.showerror("Errore", "Inserimento non avvenuto: studente già presente nell'archivio.")
                     return
                     
+
     # Modifica studente
     def on_pulsante_modificaStudente(self, event):
         matricola = self.entry_matricola_modificaStudente.get()
@@ -243,7 +245,6 @@ class myApp:
         nome_vecchio = self.archivio.studente(matricola).get_nome()
         esami_vecchi = self.archivio.studente(matricola).get_listaesami()
         note_vecchie = self.archivio.get_note(matricola)
-
         
         # Creo le label per i campi di input
         self.label_cognome_nuovo = tk.Label(contenitore1, text="Cognome", background='#FAE5E8')
@@ -356,6 +357,7 @@ class myApp:
                     messagebox.showerror("Errore", "Impossibile salvare: controllare la formattazione e la correttezza del campo lista esami.")
                     return
         
+
     # Cancella studente
     def on_pulsante_cancellaStudente(self, event):
         matricola = self.entry_matricola_cancellaStudente.get()
@@ -374,6 +376,7 @@ class myApp:
             else:
                 messagebox.showinfo("Cancellazione annullata", "Lo studente " + matricola + " non è stato cancellato.")
 
+
     # Media studente
     def on_pulsante_mediaStudente(self, event):
         matricola = self.entry_matricola_mediaStudente.get()
@@ -386,6 +389,7 @@ class myApp:
                 return
             # Eseguo la funzione di calcolo della media, passando il valore dell'entry come parametro
             messagebox.showinfo("Media", "La media dello studente " + matricola + " è " + str(self.archivio.media(int(matricola))))
+
 
     # Carica archivio da file
     def carica_archivio(self, event):
@@ -420,6 +424,7 @@ class myApp:
             else:
                 messagebox.showinfo("Caricamento annullato", "L'archivio non è stato caricato.")
     
+
     # Salva archivio su file
     def salva_archivio(self, event):
         # Finestra di salvataggio di un file classica, la sovrascrizione e l'annullamento sono gestite automaticamente
@@ -453,6 +458,7 @@ class myApp:
         """
 
 
+    # Chiudi
     def chiudi(self, event):
         risposta = messagebox.askyesnocancel("Chiudi l'applicazione", "Vuoi salvare l'archivio prima di arrestare l'applicazione?", default="cancel")
         if risposta == True:
