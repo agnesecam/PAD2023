@@ -43,32 +43,32 @@ class myApp:
         # Modifica studente
         self.pulsante_modificaStudente = tk.Button(contenitore1, text="Modifica studente", background="#FBB1BD", foreground="#000000", border=0, width=18, cursor="hand2")
         self.pulsante_modificaStudente.grid(row=3, column=0, padx=10, pady=2)
-        self.entry_matricola_modificaStudente = EntryWithPlaceholder(contenitore1, placeholder="549245",  placeholder_color='grey', width=18, border=0)
+        self.entry_matricola_modificaStudente = EntryWithPlaceholder(contenitore1, placeholder="559788",  placeholder_color='grey', width=18, border=0)
         self.entry_matricola_modificaStudente.grid(row=3, column=1)
         CreateToolTip(self.entry_matricola_modificaStudente, text = 'Inserire la matricola dello studente di cui modificare i dati')
         self.pulsante_modificaStudente.bind("<Button-1>", self.on_pulsante_modificaStudente) #on_pulsante_modificaStudente serve a passare il valore della matricola da modificare
         # Cancella studente
         self.pulsante_cancellaStudente = tk.Button(contenitore1, text="Cancella studente", background="#FF99AC", foreground="#000000", border=0, width=18, cursor="hand2")
         self.pulsante_cancellaStudente.grid(row=4, column=0, padx=10, pady=2)
-        self.entry_matricola_cancellaStudente = EntryWithPlaceholder(contenitore1, placeholder="549245",  placeholder_color='grey', width=18, border=0)
+        self.entry_matricola_cancellaStudente = EntryWithPlaceholder(contenitore1, placeholder="559788",  placeholder_color='grey', width=18, border=0)
         self.entry_matricola_cancellaStudente.grid(row=4, column=1)
         CreateToolTip(self.entry_matricola_cancellaStudente, text = 'Inserire la matricola dello studente da cancellare')
         self.pulsante_cancellaStudente.bind("<Button-1>", self.on_pulsante_cancellaStudente) #on_pulsante_cancellaStudente serve a passare il valore della matricola da cancellare
         # Media
         self.pulsante_mediaStudente = tk.Button(contenitore1, text="Calcola la media", background="#FF85A1", foreground="#000000", border=0, width=18, cursor="hand2")
         self.pulsante_mediaStudente.grid(row=5, column=0, padx=10, pady=2)
-        self.entry_matricola_mediaStudente = EntryWithPlaceholder(contenitore1, placeholder="549245",  placeholder_color='grey', width=18, border=0)
+        self.entry_matricola_mediaStudente = EntryWithPlaceholder(contenitore1, placeholder="559788",  placeholder_color='grey', width=18, border=0)
         self.entry_matricola_mediaStudente.grid(row=5, column=1)
         CreateToolTip(self.entry_matricola_mediaStudente, text = 'Inserire la matricola dello studente di cui calcolare la media del libretto')
         self.pulsante_mediaStudente.bind("<Button-1>", self.on_pulsante_mediaStudente) #on_pulsante_mediaStudente serve a passare il valore della matricola di cui calcolare la media
         # Carica l'archivio da file
         self.pulsante_caricaArchivio = tk.Button(contenitore1, text="Carica archivio da file", background="#FF7096", foreground="#000000", border=0, width=18, cursor="hand2")
         self.pulsante_caricaArchivio.grid(row=6, column=0, padx=10, pady=2)
-        self.pulsante_caricaArchivio.bind("<Button-1>", self.carica_archivio)
+        self.pulsante_caricaArchivio.bind("<Button-1>", self.caricaArchivio)
         # Salva archivio su file
         self.pulsante_salvaArchivio = tk.Button(contenitore1, text="Salva archivio su file", background="#FF5C8A", foreground="#000000", border=0, width=18, cursor="hand2")
         self.pulsante_salvaArchivio.grid(row=7, column=0, padx=10, pady=2)
-        self.pulsante_salvaArchivio.bind("<Button-1>", self.salva_archivio)
+        self.pulsante_salvaArchivio.bind("<Button-1>", self.salvaArchivio)
         self.entry_salvaArchivio = EntryWithPlaceholder(contenitore1, placeholder="archivio0901.txt",  placeholder_color='grey', width=18, border=0)
         self.entry_salvaArchivio.grid(row=7, column=1)
         CreateToolTip(self.entry_salvaArchivio, text = "Scrivere il nome e l'estensione del file da creare in cui salvare l'archivio. \nEs: filename.txt")
@@ -151,12 +151,12 @@ class myApp:
         self.entry_note.grid(row=4, column=1, pady=2)
         CreateToolTip(self.entry_note, text = 'Inserire le note dello studente.')         
         # Creo il pulsante per l'inserimento
-        pulsante_inserisci = tk.Button(contenitore1, text="Inserisci", background="#F7CAD0", border=0)
+        pulsante_inserisci = tk.Button(contenitore1, text="Inserisci", background="#F7CAD0", border=0, cursor="hand2")
         pulsante_inserisci.grid(row=5, column=1, pady=5)
-        pulsante_inserisci.bind("<Button-1>", self.inserimento_studente)
+        pulsante_inserisci.bind("<Button-1>", self.inserisciStudente)
 
 
-    def inserimento_studente(self, event):
+    def inserisciStudente(self, event):
         # Variabile per controllare sia avvenuto l'effettivo inserimento
         lunghezza_archivio = len(self.archivio.stud)
         
@@ -294,7 +294,7 @@ class myApp:
         self.readOnlyText.grid(row=2, column=1, pady=2)
 
         # Creo il pulsante per l'inserimento
-        pulsante_salva_modifiche = tk.Button(contenitore1, text="Salva", border=0, background="#F7CAD0")
+        pulsante_salva_modifiche = tk.Button(contenitore1, text="Salva", border=0, background="#F7CAD0", cursor="hand2")
         pulsante_salva_modifiche.grid(row=6, column=1, pady=2)
         pulsante_salva_modifiche.bind("<Button-1>", self.pulsante_salva_modifiche_handler)
 
@@ -386,7 +386,7 @@ class myApp:
 
 
     # Carica archivio da file
-    def carica_archivio(self, event):
+    def caricaArchivio(self, event):
         filetypes = (
         ('text files', '*.txt'),
         ('All files', '*.*')
@@ -418,13 +418,14 @@ class myApp:
             else:
                 messagebox.showinfo("Caricamento annullato", "L'archivio non è stato caricato.")
     
+
     # Salva archivio su file
     """
     In tkinter è possibile utilizzare la "asksaveasfilename" per salvare il contenuto dell'archivio. 
     L'operazione sarebbe gestita in modo più sicuro e completo, generando una finestra dialog che permette di selezionare il percorso e il nome del file da salvare.
     Tuttavia, avendo già implementato la funzione di salvataggio in archivio.py, ho deciso di sfruttarla quella.
     """
-    def salva_archivio(self, event):
+    def salvaArchivio(self, event):
         filename = self.entry_salvaArchivio.get()
         if (filename is None or filename == "" or filename == self.entry_salvaArchivio.placeholder):
             messagebox.showerror("Errore", "Inserire il nome del file in cui salvare l'archivio.")
