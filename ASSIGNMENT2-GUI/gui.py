@@ -2,8 +2,9 @@ from archivio import *
 import tkinter as tk
 from tkinter import messagebox
 from tkinter import PhotoImage # Per il bottone Chiudi
-import re 
 from tkinter import filedialog as fd # Per il caricamento e il salvataggio dell'archivio da file
+
+import re 
 from datetime import datetime # Per salvare un archivio con il nome della data di oggi alla chiusura dell'applicazione
 
 class myApp:
@@ -31,41 +32,41 @@ class myApp:
 
         # Creo i bottoni
         # Visualizza archivio
-        self.pulsante_visualizzaArchivio = tk.Button(contenitore1, text="Visualizza archivio", background="#F7CAD0", foreground="#000000", border=0, width=18)
+        self.pulsante_visualizzaArchivio = tk.Button(contenitore1, text="Visualizza archivio", background="#F7CAD0", foreground="#000000", border=0, width=18, cursor="hand2")
         self.pulsante_visualizzaArchivio.grid(row=1, column=0, padx=10, pady=2)
         self.pulsante_visualizzaArchivio.bind("<Button-1>", self.finestra_visualizzaArchivio)
         self.pulsante_visualizzaArchivio.focus()
         # Inserisci studente
-        self.pulsante_inserisciStudente = tk.Button(contenitore1, text="Inserisci studente", background="#F9BEC7", foreground="#000000", border=0, width=18)
+        self.pulsante_inserisciStudente = tk.Button(contenitore1, text="Inserisci studente", background="#F9BEC7", foreground="#000000", border=0, width=18, cursor="hand2")
         self.pulsante_inserisciStudente.grid(row=2, column=0, padx=10, pady=2)
         self.pulsante_inserisciStudente.bind("<Button-1>", self.finestra_inserisciStudente)
         # Modifica studente
-        self.pulsante_modificaStudente = tk.Button(contenitore1, text="Modifica studente", background="#FBB1BD", foreground="#000000", border=0, width=18)
+        self.pulsante_modificaStudente = tk.Button(contenitore1, text="Modifica studente", background="#FBB1BD", foreground="#000000", border=0, width=18, cursor="hand2")
         self.pulsante_modificaStudente.grid(row=3, column=0, padx=10, pady=2)
         self.entry_matricola_modificaStudente = EntryWithPlaceholder(contenitore1, placeholder="549245",  placeholder_color='grey', width=18, border=0)
         self.entry_matricola_modificaStudente.grid(row=3, column=1)
         CreateToolTip(self.entry_matricola_modificaStudente, text = 'Inserire la matricola dello studente di cui modificare i dati')
         self.pulsante_modificaStudente.bind("<Button-1>", self.on_pulsante_modificaStudente) #on_pulsante_modificaStudente serve a passare il valore della matricola da modificare
         # Cancella studente
-        self.pulsante_cancellaStudente = tk.Button(contenitore1, text="Cancella studente", background="#FF99AC", foreground="#000000", border=0, width=18)
+        self.pulsante_cancellaStudente = tk.Button(contenitore1, text="Cancella studente", background="#FF99AC", foreground="#000000", border=0, width=18, cursor="hand2")
         self.pulsante_cancellaStudente.grid(row=4, column=0, padx=10, pady=2)
         self.entry_matricola_cancellaStudente = EntryWithPlaceholder(contenitore1, placeholder="549245",  placeholder_color='grey', width=18, border=0)
         self.entry_matricola_cancellaStudente.grid(row=4, column=1)
         CreateToolTip(self.entry_matricola_cancellaStudente, text = 'Inserire la matricola dello studente da cancellare')
         self.pulsante_cancellaStudente.bind("<Button-1>", self.on_pulsante_cancellaStudente) #on_pulsante_cancellaStudente serve a passare il valore della matricola da cancellare
         # Media
-        self.pulsante_mediaStudente = tk.Button(contenitore1, text="Calcola la media", background="#FF85A1", foreground="#000000", border=0, width=18)
+        self.pulsante_mediaStudente = tk.Button(contenitore1, text="Calcola la media", background="#FF85A1", foreground="#000000", border=0, width=18, cursor="hand2")
         self.pulsante_mediaStudente.grid(row=5, column=0, padx=10, pady=2)
         self.entry_matricola_mediaStudente = EntryWithPlaceholder(contenitore1, placeholder="549245",  placeholder_color='grey', width=18, border=0)
         self.entry_matricola_mediaStudente.grid(row=5, column=1)
         CreateToolTip(self.entry_matricola_mediaStudente, text = 'Inserire la matricola dello studente di cui calcolare la media del libretto')
         self.pulsante_mediaStudente.bind("<Button-1>", self.on_pulsante_mediaStudente) #on_pulsante_mediaStudente serve a passare il valore della matricola di cui calcolare la media
         # Carica l'archivio da file
-        self.pulsante_caricaArchivio = tk.Button(contenitore1, text="Carica archivio da file", background="#FF7096", foreground="#000000", border=0, width=18)
+        self.pulsante_caricaArchivio = tk.Button(contenitore1, text="Carica archivio da file", background="#FF7096", foreground="#000000", border=0, width=18, cursor="hand2")
         self.pulsante_caricaArchivio.grid(row=6, column=0, padx=10, pady=2)
         self.pulsante_caricaArchivio.bind("<Button-1>", self.carica_archivio)
         # Salva archivio su file
-        self.pulsante_salvaArchivio = tk.Button(contenitore1, text="Salva archivio su file", background="#FF5C8A", foreground="#000000", border=0, width=18)
+        self.pulsante_salvaArchivio = tk.Button(contenitore1, text="Salva archivio su file", background="#FF5C8A", foreground="#000000", border=0, width=18, cursor="hand2")
         self.pulsante_salvaArchivio.grid(row=7, column=0, padx=10, pady=2)
         self.pulsante_salvaArchivio.bind("<Button-1>", self.salva_archivio)
         self.entry_salvaArchivio = EntryWithPlaceholder(contenitore1, placeholder="archivio0901.txt",  placeholder_color='grey', width=18, border=0)
@@ -73,7 +74,7 @@ class myApp:
         CreateToolTip(self.entry_salvaArchivio, text = "Scrivere il nome e l'estensione del file da creare in cui salvare l'archivio. \nEs: filename.txt")
         # Chiudi
         self.immagineX = tk.PhotoImage(file="immagineX.png", width=20, height=20)
-        self.pulsante_chiudi = tk.Button(contenitore1, image=self.immagineX, text="Chiudi", background="#FAE5E8", activebackground="#FAE5E8", border=0, width=50)
+        self.pulsante_chiudi = tk.Button(contenitore1, image=self.immagineX, text="Chiudi", background="#FAE5E8", activebackground="#FAE5E8", border=0, width=50, cursor="hand2")
         self.pulsante_chiudi.grid(row=0, column=2, padx=10, pady=2)
         CreateToolTip(self.pulsante_chiudi, text = "Chiudi l'applicazione")
         self.pulsante_chiudi.bind("<Button-1>", self.chiudi)
