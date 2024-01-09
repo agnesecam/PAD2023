@@ -4,6 +4,7 @@ from tkinter import messagebox
 from tkinter import PhotoImage # Per il bottone Chiudi
 import re 
 from tkinter import filedialog as fd # Per il caricamento e il salvataggio dell'archivio da file
+from datetime import datetime # Per salvare un archivio con il nome della data di oggi alla chiusura dell'applicazione
 
 class myApp:
     def __init__(self, root):
@@ -173,11 +174,12 @@ class myApp:
         numeri = "1234567890"
         
         # Controllo che i caratteri inseriti nei campi siano adeguati (solo lettere per nome e cognome, solo numeri per la matricola)
-        if self.contiene_solo_caratteri(cognome, chars_nomecognome, "cognome") and self.contiene_solo_caratteri(nome, chars_nomecognome, "nome") and self.contiene_solo_caratteri(matricola, numeri, "matricola"):
+        if self.contiene_solo_caratteri(cognome, chars_nomecognome, "cognome") and self.contiene_solo_caratteri(nome, chars_nomecognome, "nome") and self.contiene_solo_caratteri(matricola, numeri, "matricola") and self.contiene_solo_caratteri(input_esami, numeri + lettere + " " + "-" + ",", "esami"):
             # Se il campo esami non è stato completato lista_esami rimane una lista vuota
             if not (input_esami is None or input_esami == "" or input_esami == self.entry_esami.placeholder): #Dato che ho inserito i placeholder devo considerare che esami_input sia uguale al placeholder            
                 # Estrapolo il codice e il voto di ciascun esame inserito nel campo, e li aggiungo come tupla alla lista_esami                
                 for esame in input_esami.split(','):
+                    try:
                         esame = esame.strip().split('-')
                         if esame and len(esame) == 2:
                             codice, voto = esame
@@ -186,6 +188,9 @@ class myApp:
                         else:
                             messagebox.showerror("Errore", "Inserire gli esami nel formato CODICE-VOTO, separati da virgola e spazio. Es: 544MM-30, 564GG-22, 241SS-25")
                             return 
+                    except ValueError:
+                        messagebox.showerror("Errore", "Controllare il fomrmato e la correttezza dei dati nella lista degli esami.")
+                        return
 
             # Creo un nuovo studente di esempio per poter usare i metodi setter
             nuovo_studente = Studente("Nuovo", "Studente", 999999, [])
@@ -204,6 +209,7 @@ class myApp:
                 else:
                     messagebox.showerror("Errore", "Inserimento non avvenuto: studente già presente nell'archivio.")
                     return
+                    
                     
 
     # Modifica studente
@@ -238,9 +244,16 @@ class myApp:
         # Recupero i vecchi dati dello studente
         cognome_vecchio = self.archivio.studente(matricola).get_cognome()
         nome_vecchio = self.archivio.studente(matricola).get_nome()
-        esami_vecchi = self.archivio.studente(matricola).get_listaesami()
+        lista_esami_vecchi = self.archivio.studente(matricola).get_listaesami()
         note_vecchie = self.archivio.get_note(matricola)
-        
+        stringa_esami_vecchi = []
+        for tupla_esame in lista_esami_vecchi:
+            codice, voto = tupla_esame
+            stringa_esame = codice + '-' + str(voto)
+            stringa_esami_vecchi.append(stringa_esame)
+        esami_vecchi_formattati = ', '.join(stringa_esami_vecchi)
+
+
         # Creo le label per i campi di input
         self.label_cognome_nuovo = tk.Label(contenitore1, text="Cognome", background='#FAE5E8')
         self.label_cognome_nuovo.grid(row=0, column=0, pady=(8,2))
@@ -266,7 +279,8 @@ class myApp:
         CreateToolTip(self.entry_esami, text = "Scrivere gli esami nel formato CODICE-VOTO, separati da virgola e spazio o come lista di tuple. \nEs: 544MM-30, 564GG-22, 241SS-25\nEs: [('544MM'-30), ('564GG'-22), ('241SS'-25)]")
         self.entry_esami.grid(row=3, column=1, pady=2)
         self.entry_esami.delete(0, tk.END)
-        self.entry_esami.insert(0, str(esami_vecchi))
+        
+        self.entry_esami.insert(0, esami_vecchi_formattati)
         self.entry_note = tk.Entry(contenitore1, width=50, border=0)            
         self.entry_note.grid(row=4, column=1, pady=2)
         self.entry_note.delete(0, tk.END)
@@ -294,7 +308,7 @@ class myApp:
             matricola = self.readOnlyText.get(1.0, tk.END)
             input_esami = self.entry_esami.get()
             note = self.entry_note.get()
-
+            
             # Caratteri ammessi nei campi
             lettere_base = "qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM"
             lettere_accentate = "éèòçàùìÉÈÒÇÀÙÌ"
@@ -303,55 +317,35 @@ class myApp:
             numeri = "1234567890"
 
             # Controllo che i caratteri inseriti nei campi siano adeguati (solo lettere per nome e cognome, solo numeri per la matricola)
-            if self.contiene_solo_caratteri(cognome, chars_nomecognome, "cognome") and self.contiene_solo_caratteri(nome, chars_nomecognome, "nome") and self.contiene_solo_caratteri(matricola, numeri, "matricola"):            
+            if self.contiene_solo_caratteri(cognome, chars_nomecognome, "cognome") and self.contiene_solo_caratteri(nome, chars_nomecognome, "nome") and self.contiene_solo_caratteri(matricola, numeri, "matricola"):           
                 studente.set_cognome(cognome)
                 studente.set_nome(nome)
                 lista_esami = []
-                try: # Uso le eccezioni perché voglio catturare un insieme di errori che possono verificarsi quando l'utente inserisce gli esami, con un IF non saprei definire le casistiche 
-                    if not(input_esami is None or input_esami == ""):
-                        # Per la modifica degli esami vengono accettati due formati: la lista di tuple oppure il formato per l'inserimento (CODICE-VOTO, separati da virgola e spazio)
-                        if input_esami[0] == '[' and input_esami[len(input_esami)-1] == "]": # Se l'utente non modifica gli esami già presenti, o se lascia il formato di lista di tuple
-                            # input esami [('564GG', 18), ('241SS', 30), ('544MM', 26)] è una stringa, e lista_esami deve essere una lista di tuple
-                            cleaned_input_esami = input_esami.replace("[", "").replace("]", "").replace("(", "").replace(")", "")
-                            # cleaned_input_esami  '564GG', 18, '241SS', 30, '544MM', 26
-                            elements = cleaned_input_esami.split(', ')
-                            # I valori in posizione dispari sono i voti, quelli in posizione pari sono i codici, sfrutto questa cosa per creare due liste che poi unisco per ottenere la lista_esami
-                            codici = []
-                            voti = []
-                            pari = True
-                            for element in elements:
-                                if pari:
-                                    codice = element.strip("'")
-                                    codici.append(codice)
-                                else:
-                                    voto = int(element)
-                                    if voto > 33 or voto < 18:
-                                        messagebox.showerror("Errore", "I voti devono essere compresi tra 18 e 33")
-                                        return
-                                    voti.append(voto)
-                                pari = not pari
-                            # Unisci le due liste alternando codice e voto
-                            lista_esami = [(codice, voto) for codice, voto in zip(codici, voti)]
-                        else: # Se l'utente inserisci esami nel formato CODICE-VOTO, separati da virgola e spazio, oppure se lascia il campo vuoto, oppure se sbaglia formato
-                            if not (input_esami is None or input_esami == ""):
-                                # Estrapolo il codice e il voto di ciascun esame inserito nel campo, e li aggiungo come tupla alla lista_esami
-                                for esame in input_esami.split(','):
-                                        esame = esame.strip().split('-')
-                                        if esame and len(esame) == 2:
-                                            codice, voto = esame
-                                            voto = int(voto)
-                                            lista_esami.append((codice, voto))
-                                        else:
-                                            messagebox.showerror("Errore", "Inserire gli esami nel formato CODICE-VOTO, separati da virgola e spazio. Es: 544MM-30, 564GG-22, 241SS-25")
-                                            return # Esco dalla funzione inserimento_studente altrimenti lo studente viene inserito con esami vuoti
-                    studente.set_listaesami(lista_esami)
+                # Se il campo esami non è stato completato lista_esami rimane una lista vuota
+                if (input_esami is None or input_esami == ""):
                     self.archivio.modifica_note(int(matricola), note)
                     messagebox.showinfo("Modifica avvenuta", "Lo studente è stato modificato correttamente.")
                     self.chiudi_finestra()
+                else:
+                    # Estrapolo il codice e il voto di ciascun esame inserito nel campo, e li aggiungo come tupla alla lista_esami                
+                    for esame in input_esami.split(','):
+                        esame = esame.strip().split('-')
+                        if esame and len(esame) == 2:
+                            codice, voto = esame
+                            voto = int(voto)
+                            lista_esami.append((codice, voto))
+                        else:
+                            messagebox.showerror("Errore", "Inserire gli esami nel formato CODICE-VOTO, separati da virgola e spazio. Es: 544MM-30, 564GG-22, 241SS-25")
+                            return 
+                try:
+                    studente.set_listaesami(lista_esami)
                 except ValueError:
                     messagebox.showerror("Errore", "Impossibile salvare: controllare la formattazione e la correttezza del campo lista esami.")
                     return
-        
+                self.archivio.modifica_note(int(matricola), note)
+                messagebox.showinfo("Modifica avvenuta", "Lo studente è stato modificato correttamente.")
+                self.chiudi_finestra()
+            
 
     # Cancella studente
     def on_pulsante_cancellaStudente(self, event):
@@ -415,14 +409,16 @@ class myApp:
                 if lunghezza_archivio < len(self.archivio.stud):
                     messagebox.showinfo("Caricamento avvenuto", "L'archivio è stato caricato correttamente.")
                 else:
-                    messagebox.showerror("Errore", "L'archivio non è stato aggiornato: riferirsi alla console per maggiori informazioni.")
+                    messagebox.showwarning("Errore", "Tutti gli studenti sono già presenti nell'archivio.")
             else:
                 messagebox.showinfo("Caricamento annullato", "L'archivio non è stato caricato.")
     
-
-    # In tkinter è possibile utilizzare la "asksaveasfilename" per salvare il contenuto dell'archivio. 
-    # L'operazione sarebbe gestita in modo più sicuro e completo, generando una finestra che permette di selezionare il percorso e il nome del file da salvare.
-    # Tuttavia, avendo già implementato la funzione di salvataggio in archivio.py, ho deciso di sfruttarla quella.
+    # Salva archivio su file
+    """
+    In tkinter è possibile utilizzare la "asksaveasfilename" per salvare il contenuto dell'archivio. 
+    L'operazione sarebbe gestita in modo più sicuro e completo, generando una finestra dialog che permette di selezionare il percorso e il nome del file da salvare.
+    Tuttavia, avendo già implementato la funzione di salvataggio in archivio.py, ho deciso di sfruttarla quella.
+    """
     def salva_archivio(self, event):
         filename = self.entry_salvaArchivio2.get()
         if filename is None or filename == "":
@@ -433,14 +429,15 @@ class myApp:
             if self.contiene_solo_caratteri(filename, caratteri_validi, "nome file"):
                 self.archivio.salva(filename)
                 messagebox.showinfo("Salvataggio completato", "L'archivio è stato salvato correttamente nel file " + filename + ".")
-        
 
 
     # Chiudi
     def chiudi(self, event):
         risposta = messagebox.askyesnocancel("Chiudi l'applicazione", "Vuoi salvare l'archivio prima di arrestare l'applicazione?", default="cancel")
         if risposta == True:
-            self.salva_archivio(event)
+            oggi = datetime.now()
+            filenameOggi = "archivio_" + oggi.strftime("%Y%m%d%H%M%S") + ".txt"
+            self.archivio.salva(filenameOggi)
             root.destroy()
         elif risposta == False:
             root.destroy()
