@@ -112,7 +112,7 @@ class myApp:
         self.box_visualizzaArchivio.delete("1.0", tk.END)
         self.box_visualizzaArchivio.insert(tk.END, str(self.archivio))
 
-
+    # Inserisci studente
     def finestra_inserisciStudente(self, event):
         # Creo una nuova finestra per gestire l'inserimento di un nuovo studente
         self.dialog = tk.Toplevel(self.root)
@@ -155,6 +155,7 @@ class myApp:
         pulsante_inserisci = tk.Button(contenitore1, text="Inserisci", background="#F7CAD0", border=0)
         pulsante_inserisci.grid(row=5, column=1, pady=5)
         pulsante_inserisci.bind("<Button-1>", self.inserimento_studente)
+
 
     def inserimento_studente(self, event):
         # Variabile per controllare sia avvenuto l'effettivo inserimento
@@ -208,8 +209,7 @@ class myApp:
                     messagebox.showerror("Errore", "Inserimento non avvenuto: studente già presente nell'archivio.")
                     return
                     
-            
-
+    # Modifica studente
     def on_pulsante_modificaStudente(self, event):
         matricola = self.entry_matricola_modificaStudente.get()
         if matricola is None or matricola == "":
@@ -220,6 +220,11 @@ class myApp:
                 return
             # Eseguo la funzione di modifica, passando il valore dell'entry come parametro
             self.finestra_modificaStudente(int(matricola))
+
+
+    def pulsante_salva_modifiche_handler(self, event):
+        matricola = self.readOnlyText.get(1.0, tk.END).strip()
+        self.salvaModifiche(event, matricola)
 
 
     def finestra_modificaStudente(self, matricola):
@@ -279,11 +284,12 @@ class myApp:
         # Creo il pulsante per l'inserimento
         pulsante_salva_modifiche = tk.Button(contenitore1, text="Salva")
         pulsante_salva_modifiche.grid(row=6, column=1, pady=2)
-        pulsante_salva_modifiche.bind("<Button-1>", lambda event, matricola=matricola: self.salvaModifiche(event, matricola))
+        pulsante_salva_modifiche.bind("<Button-1>", self.pulsante_salva_modifiche_handler)
 
 
     def salvaModifiche (self, event, matricola):
-        risposta = messagebox.askokcancel("Conferma", "Salvare le modifiche allo studente con matricola " + str(matricola) + "?", default="cancel")
+        risposta = messagebox.askokcancel("Conferma", "Salvare le modifiche allo studente con matricola " + matricola + "?", default="cancel")
+        matricola = int(matricola)
         if risposta == True:
             studente = self.archivio.studente(matricola)
             # Prendo i dati in input
@@ -350,7 +356,7 @@ class myApp:
                     messagebox.showerror("Errore", "Impossibile salvare: controllare la formattazione e la correttezza del campo lista esami.")
                     return
         
-
+    # Cancella studente
     def on_pulsante_cancellaStudente(self, event):
         matricola = self.entry_matricola_cancellaStudente.get()
         if matricola is None or matricola == "":
@@ -368,7 +374,7 @@ class myApp:
             else:
                 messagebox.showinfo("Cancellazione annullata", "Lo studente " + matricola + " non è stato cancellato.")
 
-
+    # Media studente
     def on_pulsante_mediaStudente(self, event):
         matricola = self.entry_matricola_mediaStudente.get()
         if matricola is None or matricola == "":
@@ -381,7 +387,7 @@ class myApp:
             # Eseguo la funzione di calcolo della media, passando il valore dell'entry come parametro
             messagebox.showinfo("Media", "La media dello studente " + matricola + " è " + str(self.archivio.media(int(matricola))))
 
-
+    # Carica archivio da file
     def carica_archivio(self, event):
         filetypes = (
         ('text files', '*.txt'),
@@ -414,7 +420,7 @@ class myApp:
             else:
                 messagebox.showinfo("Caricamento annullato", "L'archivio non è stato caricato.")
     
-
+    # Salva archivio su file
     def salva_archivio(self, event):
         # Finestra di salvataggio di un file classica, la sovrascrizione e l'annullamento sono gestite automaticamente
         path = fd.asksaveasfilename(defaultextension=".txt", filetypes=[("File di testo", "*.txt")])
