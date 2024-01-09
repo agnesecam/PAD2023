@@ -53,7 +53,7 @@ class myApp:
         CreateToolTip(self.entry_matricola_cancellaStudente, text = 'Inserire la matricola dello studente da cancellare')
         self.pulsante_cancellaStudente.bind("<Button-1>", self.on_pulsante_cancellaStudente) #on_pulsante_cancellaStudente serve a passare il valore della matricola da cancellare
         # Media
-        self.pulsante_mediaStudente = tk.Button(contenitore1, text="Media studente", background="#FF85A1", foreground="#000000", border=0, width=18)
+        self.pulsante_mediaStudente = tk.Button(contenitore1, text="Calcola la media", background="#FF85A1", foreground="#000000", border=0, width=18)
         self.pulsante_mediaStudente.grid(row=5, column=0, padx=10, pady=2)
         self.entry_matricola_mediaStudente = tk.Entry(contenitore1, width=18, border=0)
         self.entry_matricola_mediaStudente.grid(row=5, column=1)
@@ -67,14 +67,9 @@ class myApp:
         self.pulsante_salvaArchivio = tk.Button(contenitore1, text="Salva archivio su file", background="#FF5C8A", foreground="#000000", border=0, width=18)
         self.pulsante_salvaArchivio.grid(row=7, column=0, padx=10, pady=2)
         self.pulsante_salvaArchivio.bind("<Button-1>", self.salva_archivio)
-        # Salva archivio su file: versione che sfrutta il metodo salva() in archivio.py
-        # Utilizzare solo togliendo il commento al metodo salva_archivio2 e commentando la riga del binding del pulsante_salvaArchivio con salva_archivio
-        """
-        self.pulsante_salvaArchivio.bind("<Button-1>", self.salva_archivio2)
-        self.entry_salvaArchivio2 = tk.Entry(contenitore1, width=18)
-        self.entry_salvaArchivio2.grid(row=6, column=1)
+        self.entry_salvaArchivio2 = tk.Entry(contenitore1, width=18, border=0)
+        self.entry_salvaArchivio2.grid(row=7, column=1)
         CreateToolTip(self.entry_salvaArchivio2, text = "Scrivere il nome e l'estensione del file da creare in cui salvare l'archivio. \nEs: filename.txt")
-        """
         # Chiudi
         self.immagineX = tk.PhotoImage(file="immagineX.png", width=20, height=20)
         self.pulsante_chiudi = tk.Button(contenitore1, image=self.immagineX, text="Chiudi", background="#FAE5E8", activebackground="#FAE5E8", border=0, width=50)
@@ -425,27 +420,10 @@ class myApp:
                 messagebox.showinfo("Caricamento annullato", "L'archivio non è stato caricato.")
     
 
-    # Salva archivio su file
+    # In tkinter è possibile utilizzare la "asksaveasfilename" per salvare il contenuto dell'archivio. 
+    # L'operazione sarebbe gestita in modo più sicuro e completo, generando una finestra che permette di selezionare il percorso e il nome del file da salvare.
+    # Tuttavia, avendo già implementato la funzione di salvataggio in archivio.py, ho deciso di sfruttarla quella.
     def salva_archivio(self, event):
-        # Finestra di salvataggio di un file classica, la sovrascrizione e l'annullamento sono gestite automaticamente
-        path = fd.asksaveasfilename(defaultextension=".txt", filetypes=[("File di testo", "*.txt")])
-        if path is None or path == "":
-            messagebox.showinfo("Caricamento annullato", "Nessun file selezionato.")
-            return
-        else:
-            filename = path.split('/')[-1]  # Voglio solo il nome del file, non il path completo
-            with open(path, "w") as file:
-                contenuto = str(self.archivio)
-                file.write(contenuto)
-            # Messaggio di conferma
-            tk.messagebox.showinfo("Salvataggio completato", "L'archivio è stato salvato correttamente nel file " + filename + ".")
-    
-
-    # Dato che in archivio.py è stato implementato il metodo salva(), potrei usare questo metodo per salvare l'archivio, ma ho preferito sfruttare asksaveasfilename di tkinter perché è più sicura e completa.
-    # Tuttavia, di seguito si trova il codice per salvare l'archivio usando il metodo salva() di archivio.py, commentato.
-    # Ricordarsi di adattare i pulsanti e i binding nel metodo __init__ di myApp.
-    """
-    def salva_archivio2(self, event):
         filename = self.entry_salvaArchivio2.get()
         if filename is None or filename == "":
             messagebox.showerror("Errore", "Inserire il nome del file in cui salvare l'archivio.")
@@ -455,7 +433,7 @@ class myApp:
             if self.contiene_solo_caratteri(filename, caratteri_validi, "nome file"):
                 self.archivio.salva(filename)
                 messagebox.showinfo("Salvataggio completato", "L'archivio è stato salvato correttamente nel file " + filename + ".")
-        """
+        
 
 
     # Chiudi
