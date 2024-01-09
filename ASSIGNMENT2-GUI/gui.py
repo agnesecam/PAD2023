@@ -42,21 +42,21 @@ class myApp:
         # Modifica studente
         self.pulsante_modificaStudente = tk.Button(contenitore1, text="Modifica studente", background="#FBB1BD", foreground="#000000", border=0, width=18)
         self.pulsante_modificaStudente.grid(row=3, column=0, padx=10, pady=2)
-        self.entry_matricola_modificaStudente = tk.Entry(contenitore1, width=18, border=0)
+        self.entry_matricola_modificaStudente = EntryWithPlaceholder(contenitore1, placeholder="549245",  placeholder_color='grey', width=18, border=0)
         self.entry_matricola_modificaStudente.grid(row=3, column=1)
         CreateToolTip(self.entry_matricola_modificaStudente, text = 'Inserire la matricola dello studente di cui modificare i dati')
         self.pulsante_modificaStudente.bind("<Button-1>", self.on_pulsante_modificaStudente) #on_pulsante_modificaStudente serve a passare il valore della matricola da modificare
         # Cancella studente
         self.pulsante_cancellaStudente = tk.Button(contenitore1, text="Cancella studente", background="#FF99AC", foreground="#000000", border=0, width=18)
         self.pulsante_cancellaStudente.grid(row=4, column=0, padx=10, pady=2)
-        self.entry_matricola_cancellaStudente = tk.Entry(contenitore1, width=18, border=0)
+        self.entry_matricola_cancellaStudente = EntryWithPlaceholder(contenitore1, placeholder="549245",  placeholder_color='grey', width=18, border=0)
         self.entry_matricola_cancellaStudente.grid(row=4, column=1)
         CreateToolTip(self.entry_matricola_cancellaStudente, text = 'Inserire la matricola dello studente da cancellare')
         self.pulsante_cancellaStudente.bind("<Button-1>", self.on_pulsante_cancellaStudente) #on_pulsante_cancellaStudente serve a passare il valore della matricola da cancellare
         # Media
         self.pulsante_mediaStudente = tk.Button(contenitore1, text="Calcola la media", background="#FF85A1", foreground="#000000", border=0, width=18)
         self.pulsante_mediaStudente.grid(row=5, column=0, padx=10, pady=2)
-        self.entry_matricola_mediaStudente = tk.Entry(contenitore1, width=18, border=0)
+        self.entry_matricola_mediaStudente = EntryWithPlaceholder(contenitore1, placeholder="549245",  placeholder_color='grey', width=18, border=0)
         self.entry_matricola_mediaStudente.grid(row=5, column=1)
         CreateToolTip(self.entry_matricola_mediaStudente, text = 'Inserire la matricola dello studente di cui calcolare la media del libretto')
         self.pulsante_mediaStudente.bind("<Button-1>", self.on_pulsante_mediaStudente) #on_pulsante_mediaStudente serve a passare il valore della matricola di cui calcolare la media
@@ -68,9 +68,9 @@ class myApp:
         self.pulsante_salvaArchivio = tk.Button(contenitore1, text="Salva archivio su file", background="#FF5C8A", foreground="#000000", border=0, width=18)
         self.pulsante_salvaArchivio.grid(row=7, column=0, padx=10, pady=2)
         self.pulsante_salvaArchivio.bind("<Button-1>", self.salva_archivio)
-        self.entry_salvaArchivio2 = tk.Entry(contenitore1, width=18, border=0)
-        self.entry_salvaArchivio2.grid(row=7, column=1)
-        CreateToolTip(self.entry_salvaArchivio2, text = "Scrivere il nome e l'estensione del file da creare in cui salvare l'archivio. \nEs: filename.txt")
+        self.entry_salvaArchivio = EntryWithPlaceholder(contenitore1, placeholder="archivio0901.txt",  placeholder_color='grey', width=18, border=0)
+        self.entry_salvaArchivio.grid(row=7, column=1)
+        CreateToolTip(self.entry_salvaArchivio, text = "Scrivere il nome e l'estensione del file da creare in cui salvare l'archivio. \nEs: filename.txt")
         # Chiudi
         self.immagineX = tk.PhotoImage(file="immagineX.png", width=20, height=20)
         self.pulsante_chiudi = tk.Button(contenitore1, image=self.immagineX, text="Chiudi", background="#FAE5E8", activebackground="#FAE5E8", border=0, width=50)
@@ -107,6 +107,7 @@ class myApp:
         self.box_visualizzaArchivio.pack()
         self.box_visualizzaArchivio.delete("1.0", tk.END)
         self.box_visualizzaArchivio.insert(tk.END, str(self.archivio))
+        self.box_visualizzaArchivio.configure(state="disabled")
 
 
     # Inserisci studente
@@ -215,7 +216,7 @@ class myApp:
     # Modifica studente
     def on_pulsante_modificaStudente(self, event):
         matricola = self.entry_matricola_modificaStudente.get()
-        if matricola is None or matricola == "":
+        if (matricola is None or matricola == "" or matricola == self.entry_matricola_modificaStudente.placeholder):
             messagebox.showerror("Errore", "Inserire la matricola dello studente da modificare.")
         elif self.contiene_solo_caratteri(matricola, "1234567890", "matricola"):
             if not (int(matricola) in self.archivio.get_studenti()):
@@ -292,7 +293,7 @@ class myApp:
         self.readOnlyText.grid(row=2, column=1, pady=2)
 
         # Creo il pulsante per l'inserimento
-        pulsante_salva_modifiche = tk.Button(contenitore1, text="Salva")
+        pulsante_salva_modifiche = tk.Button(contenitore1, text="Salva", border=0, background="#F7CAD0")
         pulsante_salva_modifiche.grid(row=6, column=1, pady=2)
         pulsante_salva_modifiche.bind("<Button-1>", self.pulsante_salva_modifiche_handler)
 
@@ -350,7 +351,7 @@ class myApp:
     # Cancella studente
     def on_pulsante_cancellaStudente(self, event):
         matricola = self.entry_matricola_cancellaStudente.get()
-        if matricola is None or matricola == "":
+        if (matricola is None or matricola == "" or matricola == self.entry_matricola_cancellaStudente.placeholder):
             messagebox.showerror("Errore", "Inserire la matricola dello studente da cancellare.")
             return
         if self.contiene_solo_caratteri(matricola, "1234567890", "matricola"):
@@ -369,7 +370,7 @@ class myApp:
     # Media studente
     def on_pulsante_mediaStudente(self, event):
         matricola = self.entry_matricola_mediaStudente.get()
-        if matricola is None or matricola == "":
+        if (matricola is None or matricola == "" or matricola == self.entry_matricola_mediaStudente.placeholder):
             messagebox.showerror("Errore", "Inserire la matricola dello studente di cui calcolare la media.")
             return
         if self.contiene_solo_caratteri(matricola, "1234567890", "matricola"):
@@ -377,7 +378,10 @@ class myApp:
                 messagebox.showerror("Errore", "Matricola non presente nell'archivio.")
                 return
             # Eseguo la funzione di calcolo della media, passando il valore dell'entry come parametro
-            messagebox.showinfo("Media", "La media dello studente " + matricola + " è " + str(self.archivio.media(int(matricola))))
+            if self.archivio.media(int(matricola)) is None:
+                messagebox.showinfo("Media", "Lo studente " + matricola + " non ha esami registrati.")
+            else:
+                messagebox.showinfo("Media", "La media dello studente " + matricola + " è " + str(self.archivio.media(int(matricola))))
 
 
     # Carica archivio da file
@@ -420,8 +424,8 @@ class myApp:
     Tuttavia, avendo già implementato la funzione di salvataggio in archivio.py, ho deciso di sfruttarla quella.
     """
     def salva_archivio(self, event):
-        filename = self.entry_salvaArchivio2.get()
-        if filename is None or filename == "":
+        filename = self.entry_salvaArchivio.get()
+        if (filename is None or filename == "" or filename == self.entry_salvaArchivio.placeholder):
             messagebox.showerror("Errore", "Inserire il nome del file in cui salvare l'archivio.")
             return
         else:
