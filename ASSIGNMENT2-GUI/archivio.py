@@ -120,7 +120,7 @@ class Studente:
             return False
         else:
             for i in range(len(self.listaesami)):       #scorro la lista degli esami dello studente  [('544MM', 23), ('564GG', 21)]
-                esame = self.listaesami[i]                #prendo la tupla esame (codice, voto)
+                esame = self.listaesami[i]                 #prendo la tupla esame (codice, voto)
                 if esame[0] == codice:                     #se il codice dell'esame è uguale al codice passato
                     if esame[1] == voto:                    #se il voto è uguale al voto passato
                         print("ERRORE: inserire un voto diverso da quello assegnato")
@@ -162,7 +162,7 @@ class Archivio:
     def __init__(self):
         self.stud = {} #inizializzo l'archivio come dizionario vuoto
         if not isinstance(self.stud, dict):
-            raise TypeError("L'archivio deve essere un dizionario") #TODO non so quanto sia utile questo controllo
+            raise TypeError("L'archivio deve essere un dizionario")
 
     def inserisci(self, studente, note=""):
         if not isinstance(studente, Studente):
@@ -214,8 +214,6 @@ class Archivio:
             return True
         print("ERRORE: matricola non presente nell'archivio")
         return False
-
-        #TODO Vuoi creare un metodo in cui cancelli la nota con i relativi test?
 
     def studente(self, matricola):
         if matricola in self.stud:
@@ -344,6 +342,7 @@ class Archivio:
             print("ERRORE durante il caricamento del file " + str(nomefile) + ":" + str(e))
             return False
         
+
 
 
 
