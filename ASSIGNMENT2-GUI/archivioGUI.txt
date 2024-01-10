@@ -1,5 +1,0 @@
-Carlo Rossi mat: 345655 esami: [('544MM', 30), ('564GG', 22)] nota1
-Luigi Bianchi mat: 123456 esami: no nota2
-Giulia Verdi mat: 987654 esami: [('564GG', 18), ('241SS', 30), ('544MM', 26)] nota3
-Giorgio Neri mat: 789101 esami: [('671IF', 25), ('410SS', 18), ('388LL', 29)]
-Giorgio Gialli mat: 549245 esami: no nota5
