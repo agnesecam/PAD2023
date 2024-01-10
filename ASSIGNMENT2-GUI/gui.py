@@ -1,3 +1,10 @@
+'''
+Assegnamento 2py 622AA 2023/24 svolto da:
+Agnese Camici
+mat. 559788
+a.camici1@studenti.unipi.it
+'''
+
 from archivio import *
 import tkinter as tk
 from tkinter import messagebox
