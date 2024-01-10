@@ -10,7 +10,7 @@ def controllo():
     archivio = Archivio()
 
     # test base su studente
-    print("\033[33m==========> Test 1\033[0m")
+    print("==========> Test 1")
     #
     
     try:
@@ -36,7 +36,7 @@ def controllo():
 
     
     # test voti studente
-    print("\033[33m==========> Test 2\033[0m")
+    print("==========> Test 2")
     #
     testFalliti += testEqual(stud1.registra_esame("544MM", 23),True)
     testFalliti += testEqual(stud1.registra_esame("564GG", 21),True)
@@ -59,7 +59,7 @@ def controllo():
     testFalliti += testEqual(stud1.get_listaesami(), [("544MM", 23), ("564GG", 21)])
     testFalliti += testEqual(stud1.media(), 22.0)
     # test valori errati studente
-    print("\033[33m==========> Test 3\033[0m")
+    print("==========> Test 3")
     #
     try :
         Studente("Lucato", "Giusi", -2)
@@ -72,8 +72,8 @@ def controllo():
     except(ValueError):
         print("Pass")
     try:
-        stud1.set_listaesami([("ABV23", 12)])
-        testFalliti += 1
+       stud1.set_listaesami([("ABV23", 12)])
+       testFalliti += 1
     except(ValueError):
         print("Pass")
     try:
@@ -130,7 +130,7 @@ def controllo():
     testFalliti += testEqual(stud2.media(), None)
 
     # archivio: inserimenti, elimina e note corretti e sbagliati
-    print("\033[33m==========> Test 4\033[0m")
+    print("==========> Test 4")
     #
     testFalliti += testEqual(archivio.get_studenti(), [])
     testFalliti += testEqual(archivio.inserisci(stud1, ""), True)
@@ -157,50 +157,50 @@ def controllo():
     testFalliti += testEqual(archivio.inserisci(stud3), True)
 
     # test su registra_esame
-    print("\033[33m==========> Test 5\033[0m")
+    print("==========> Test 5")
     testFalliti += testEqual(archivio.registra_esame(345654, "444GG", 27), True)
     testFalliti += testEqual(archivio.registra_esame(345654, "564GG", 18), True)
     testFalliti += testEqual(archivio.registra_esame(528611, "564GG", 18), True)
     testFalliti += testEqual(archivio.registra_esame(444655, "564GG", 18), False)  # matricola non presente
     
 # test su media
-    print("\033[33m==========> Test 6\033[0m")
+    print("==========> Test 6")
     testFalliti += testEqual(archivio.media(111111), None)
     testFalliti += testEqual(archivio.media(345655), 22.0)
 
 #test su modifica voto
-    print("\033[33m==========> Test 7\033[0m")
+    print("==========> Test 7")
     testFalliti += testEqual(archivio.modifica_voto(345654, "444GG", 30),True)
     testFalliti += testEqual(archivio.modifica_voto(345654, "564GG", 20),True)
     testFalliti += testEqual(archivio.modifica_voto(345654, "456FF", 18),False) #matricola non presente
     testFalliti += testEqual(archivio.media(345654),25)
 
 #test su conta studenti promossi
-    print("\033[33m==========> Test 8\033[0m")
+    print("==========> Test 8")
     testFalliti += testEqual(archivio.conta_studenti_promossi("564GG"),3)
     testFalliti += testEqual(archivio.conta_studenti_promossi("564GG",21),1)
     testFalliti += testEqual(archivio.conta_studenti_promossi("564GG",25),0)
 
 #test su lista studenti promossi
-    print("\033[33m==========> Test 9\033[0m")
+    print("==========> Test 9")
     testFalliti += testEqual(archivio.conta_studenti_promossi("564GG"), len(archivio.lista_studenti_promossi("564GG")))
     testFalliti += testEqual(archivio.conta_studenti_promossi("564GG", 21),len(archivio.lista_studenti_promossi("564GG", 21)))
     testFalliti += testEqual(archivio.conta_studenti_promossi("564GG", 25), len(archivio.lista_studenti_promossi("564GG", 25)))
 
 # test su lista_media
-    print("\033[33m==========> Test 10\033[0m")
+    print("==========> Test 10")
     testFalliti += testEqual(len(archivio.lista_studenti_media()), 3)
     testFalliti += testEqual(len(archivio.lista_studenti_media(22)), 2)
     testFalliti += testEqual(len(archivio.lista_studenti_media(25)), 1)
 
 # test su cancella esame
-    print("\033[33m==========> Test 11\033[0m")
+    print("==========> Test 11")
     testFalliti += testEqual(archivio.cancella_esame(345615, "444GG"),False)#matricola non presente
     testFalliti += testEqual(archivio.cancella_esame(345655, "564GG"),True)
     testFalliti += testEqual(archivio.cancella_esame(345655, "456FF"),False) #codice non presente
 
 # test su file
-    print("\033[33m==========> Test 12\033[0m")
+    print("==========> Test 12")
     archivio1 = Archivio()
     archivio2 = Archivio()
     testFalliti += testEqual(archivio1.carica("archivio2.txt"),False) #file non deve essere presente, cancellarlo se presente
@@ -211,9 +211,8 @@ def controllo():
     testFalliti += testEqual(archivio.carica("archivio2.txt"),False) #file non presente
 
 #stampa finale archivio
-    print("\033[33m==========> Stampa finale archivio\033[0m")
+    print("==========> Stampa finale archivio")
     print(archivio)
-    print(archivio2)
     # abbiamo finito ?
     if testFalliti == 0:
         print("\t****Test completati -- effettuare la consegna come da README")
@@ -223,3 +222,4 @@ def controllo():
 
 # eseguo i test automatici
 controllo()
+

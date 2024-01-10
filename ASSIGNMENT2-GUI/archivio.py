@@ -15,12 +15,11 @@ class Studente:
             raise ValueError("La matricola deve essere un numero intero positivo")
         if not isinstance(listaesami, list) and listaesami is not None:
             raise TypeError("La lista degli esami deve essere una lista")
-
         if listaesami is None:
-            listaesami = []     #Mi serve perché altrimenti se metto uno studente senza listaesami, il programma mi da errore perché non può fare il for esame in listaesami
+            listaesami = []     # Prevengo l'errore del for su listaesami vuota nel caso di studente senza esami
         for esame in listaesami:
-            if not isinstance(esame[0], str) or not isinstance(esame[1], int) or not(18 <= esame[1] <= 33):
-                raise ValueError("Inserire una stringa con il codice dell'esame, e come voto un intero compreso tra 18 e 33")
+            if not isinstance(esame[0], str) or not isinstance(esame[1], int) or not(18 <= esame[1] < 33):
+                raise ValueError("Inserire una stringa con il codice dell'esame, e come voto un intero compreso tra 18 e 32")
         else:
             self.cognome = cognome
             self.nome = nome
@@ -54,21 +53,23 @@ class Studente:
     def get_listaesami(self):
         return self.listaesami
 
+
     #Setters
-    def set_cognome(self, cognome):  #TODO controlla che non possa farlo con if else
+    def set_cognome(self, cognome):
         if not isinstance(cognome, str) or cognome == "":
             raise TypeError("Il cognome deve essere una stringa")
         self.cognome = cognome
         print("Cognome modificato correttamente")
 
-    def set_nome(self, nome): #TODO controlla che non possa farlo con if else
+    def set_nome(self, nome):
         if not isinstance(nome, str) or nome == "":
             raise TypeError("Il nome deve essere una stringa")
         self.nome = nome
         print("Nome modificato correttamente")
 
-    def set_matricola(self, matricola): #TODO controlla che non possa farlo con if else
+    def set_matricola(self, matricola): 
         if not isinstance(matricola, int):
+            # Alzo un'eccezione perché nella GUI scrivendo nelle entry viene passata una stringa come matricola. Alzare ora l'eccezione mi aiuta a tenere sotto controllo quel passaggio.
             raise TypeError("La matricola deve essere un numero intero positivo")
         elif matricola <= 0:
             raise ValueError("La matricola deve essere un numero intero positivo")
@@ -85,7 +86,7 @@ class Studente:
                 raise TypeError("Inserire una stringa con il codice dell'esame")
             if not isinstance(esame[1], int):
                 raise TypeError("Inserire un numero intero come esame")
-            if not(18 <= esame[1] <= 33):
+            if not(18 <= esame[1] < 33):
                 raise ValueError("Inserire un voto compreso tra 18 e 33")
         self.listaesami = listaesami
 
@@ -96,11 +97,16 @@ class Studente:
             return self.nome + " " + self.cognome + " " + "mat: " + str(self.matricola) + " " + "esami: " + str(self.listaesami)
 
     def __eq__(self, altroStudente):
-        return self.cognome == altroStudente.cognome and self.nome == altroStudente.nome and self.matricola == altroStudente.matricola
+        if isinstance(altroStudente, Studente): 
+            return self.cognome == altroStudente.cognome and self.nome == altroStudente.nome and self.matricola == altroStudente.matricola
+        print("ERRORE: L'oggetto passato non è di tipo Studente")
+        return False
 
+
+    # Registra esame
     def registra_esame(self, codice, voto):
-        if not isinstance(codice, str) or not isinstance(voto, int) or not(18 <= voto <= 33):
-            print("ERRORE: inserire una stringa con il codice dell'esame, e come voto un intero compreso tra 18 e 33")
+        if not isinstance(codice, str) or not isinstance(voto, int) or not(18 <= voto < 33):
+            print("ERRORE: inserire una stringa con il codice dell'esame, e come voto un intero compreso tra 18 e 32")
             return False
         else:
             for esame in self.listaesami:
@@ -111,27 +117,33 @@ class Studente:
             print("Esame registrato")
             return True
 
+
+    # Modifica voto
     def modifica_voto(self, codice, voto):
         if not isinstance(codice, str) or codice == "":
             print("ERRORE: inserire una stringa con il codice dell'esame")
             return False
-        elif not isinstance(voto, int) or not(18 <= voto <= 33):
+        elif not isinstance(voto, int) or not(18 <= voto < 33):
             print("ERRORE: inserire come voto un intero compreso tra 18 e 33")
             return False
         else:
-            for i in range(len(self.listaesami)):       #scorro la lista degli esami dello studente  [('544MM', 23), ('564GG', 21)]
-                esame = self.listaesami[i]                 #prendo la tupla esame (codice, voto)
-                if esame[0] == codice:                     #se il codice dell'esame è uguale al codice passato
-                    if esame[1] == voto:                    #se il voto è uguale al voto passato
+            for i in range(len(self.listaesami)):       # Scorro la lista degli esami dello studente  [('544MM', 23), ('564GG', 21)]
+                esame = self.listaesami[i]                 # prendo la tupla esame (codice, voto)
+                if esame[0] == codice:                     # se il codice dell'esame è uguale al codice passato
+                    if esame[1] == voto:                     # se il voto è uguale al voto passato
                         print("ERRORE: inserire un voto diverso da quello assegnato")
                         return False
-                    self.listaesami[i] = (codice, voto)    #modifico la tupla perché le tuple non ammettono assegnamenti di un singolo elemento della tupla (come il codice)
+                    # Modifico la tupla (perché le tuple non ammettono assegnamenti di un singolo elemento della tupla, come il voto)
+                    # Utilizzo l'indice per modificare il voto perché le tuple non ammettono assegnamenti di un singolo elemento (come il codice). 
+                    # Se usassi variabili come voto1, codice1, voto2 e codice2 e qualcosa come voto1 == voto2 avrei una modifica della variabile voto1 locale, che è una variabile temporanea e non influisce sulla tupla reale in self.listaesami.                    
+                    self.listaesami[i] = (codice, voto)    
                     print("Voto modificato correttamente")
                     return True
             print("ERRORE: esame non presente nella carriera dello studente")
             return False
-    #Nota: utilizzo l'indice per modificare il voto perché le tuple non ammettono assegnamenti di un singolo elemento (come il codice)''. Se usassi variabili come voto1, codice1, voto2 e codice2 e qualcosa come voto1 = voto2 avrei una modifica della variabile  variabile voto1 locale, che è una variabile temporanea e non influisce sulla tupla reale in self.listaesami.
-        
+            
+
+    # Cancella esame
     def cancella_esame(self, codice):
         if not isinstance(codice, str) or codice == "":
             print("ERRORE: inserire una stringa con il codice dell'esame")
@@ -145,9 +157,11 @@ class Studente:
             print("ERRORE: esame non presente nella carriera dello studente")
             return False
 
+
+    # Media
     def media(self):
         if not self.listaesami:
-            print("Lo studente non ha ancora sostenuto alcun esame")
+            print("Lo studente " + str(self.matricola) + " non ha ancora sostenuto alcun esame")
             return None
         somma_voti = 0
         for voto in self.listaesami:
@@ -160,11 +174,31 @@ class Studente:
 #CLASSE ARCHIVIO
 class Archivio:
     def __init__(self):
-        self.stud = {} #inizializzo l'archivio come dizionario vuoto
+        self.stud = {} # Inizializzo l'archivio come dizionario vuoto
         if not isinstance(self.stud, dict):
             raise TypeError("L'archivio deve essere un dizionario")
 
-    def inserisci(self, studente, note=""):
+    # Getters
+    def get_note(self, matricola):
+        if matricola in self.stud:                
+            return self.stud[matricola][1]  # Ricorda che la tupla è (studente, note)
+        return None 
+
+    def get_studenti(self):
+        return list(self.stud.keys())
+    
+    def __str__(self):
+        stampa = ""
+        for matricola, (studente, note) in self.stud.items():
+            if note == "":
+                stampa += str(studente) + "\n"
+            else:
+                stampa += str(studente) + ' ' + str(note) + "\n"
+        return stampa
+        
+
+    # Inserisci studente
+    def inserisci(self, studente, note = ""):
         if not isinstance(studente, Studente):
             print("ERRORE: L'oggetto inserito non è di tipo Studente")
             return False
@@ -174,19 +208,12 @@ class Archivio:
         if not isinstance(note, str) and note is not None:
             print("ERRORE: Le note devono essere una stringa")
             return False
-            #utile solo in caso il dizionario venga fornito a mano già popolato, ma non è il caso, se nella chiamata archivio.inserisci(stud1, "nota1") non viene passata una stringa, viene stampato l'errore NameError nota1 is not defined 
-        self.stud[studente.matricola] = (studente, note) #inserisco la matricola come chiave e la tupla (studente, note) come valore
+            # L'ultimo controllo sulle note non è molto utile: nella GUI i campi passano necessariemente una stringa. Lascio comunque questo controllo per sicurezza nel caso in cui venga passato un archivio già esistente (come da un file di testo) e le note non siano stringhe.
+        self.stud[studente.matricola] = (studente, note) # Inserisco la matricola come chiave e la tupla (studente, note) come valore
         return True
 
-    def __str__(self):
-        stampa = ""
-        for matricola, (studente, note) in self.stud.items():
-            if note == "":
-                stampa += str(studente) + "\n"
-            else:
-                stampa += str(studente) + ' ' + str(note) + "\n"
-        return stampa
 
+    # Elimina studente
     def elimina(self, matricola):
         if matricola in self.stud:
             del self.stud[matricola]
@@ -194,15 +221,9 @@ class Archivio:
             return True
         print("ERRORE: matricola non presente nell'archivio")
         return False
+    
 
-    def get_note(self, matricola):
-        if matricola in self.stud:                
-            return self.stud[matricola][1]  #ricorda che la tupla è (studente, note)
-        return None 
-
-    def get_studenti(self):
-        return list(self.stud.keys())
-
+    # Modifica note
     def modifica_note(self, matricola, nota):
         if matricola in self.stud:
             if not isinstance(nota, str):
@@ -215,24 +236,30 @@ class Archivio:
         print("ERRORE: matricola non presente nell'archivio")
         return False
 
+
+    # Studente
     def studente(self, matricola):
         if matricola in self.stud:
             s = self.stud[matricola][0]
             return s
         return None
 
+
+    # Registra esame
     def registra_esame(self, matricola, codice, voto):
         if matricola in self.stud:
-            if isinstance(codice, str) and isinstance(voto, int) and 18 <= voto <= 33:
+            if isinstance(codice, str) and isinstance(voto, int) and 18 <= voto < 33:
                 (studente, note) = self.stud[matricola]
                 studente.registra_esame(codice, voto)
                 return True
             else:
-                print("ERRORE: inserire una stringa con il codice dell'esame, e come voto un intero compreso tra 18 e 33")
+                print("ERRORE: inserire una stringa con il codice dell'esame, e come voto un intero compreso tra 18 e 32")
                 return False
         print("ERRORE: matricola non presente nell'archivio")
         return False
 
+
+    # Modifica voto
     def modifica_voto(self, matricola, codice, voto):
         #controlli dentro studente.modifica_voto
         #non controllo che la matricola sia un intero positivo perché se è all'interno di self.stud è sicuramente un intero positivo
@@ -245,6 +272,8 @@ class Archivio:
         print("ERRORE: matricola non presente nell'archivio")
         return False
     
+
+    # Cancella esame
     def cancella_esame(self, matricola, codice):
         if matricola in self.stud:
             studente, note = self.stud[matricola]
@@ -256,6 +285,8 @@ class Archivio:
         print("ERRORE: matricola non presente nell'archivio")
         return False
 
+
+    # Media studente
     def media(self, matricola):
         if matricola in self.stud:
             (studente, note) = self.stud[matricola]
@@ -264,6 +295,8 @@ class Archivio:
         print("ERRORE: matricola non presente nell'archivio")
         return None
 
+
+    # Lista studenti promossi ad un esame
     def lista_studenti_promossi(self, codice, soglia=18):
         matricole_promosse = []
         #self.stud è un dizionario (Studente, note), quindi per scorrerlo devo usare items()
@@ -274,13 +307,17 @@ class Archivio:
                     break
         return matricole_promosse
     
+
+    # Conta studenti promossi ad un esame
     def conta_studenti_promossi(self, codice, soglia=18):
         n = len(self.lista_studenti_promossi(codice, soglia))
         return n
     
+
+    # Lista studenti con una certa media
     def lista_studenti_media(self, soglia=18):
         matricole_selezionate = []
-        if not isinstance(soglia, int) or not(18 <= soglia <= 33):
+        if not isinstance(soglia, int) or not(18 <= soglia < 33):
             print("ERRORE: inserire un intero compreso tra 18 e 33")
             return None
         for matricola, (studente, note) in self.stud.items():
@@ -289,15 +326,15 @@ class Archivio:
         if matricole_selezionate == []:
             print("Nessuno studente ha una media superiore a " + str(soglia))
         return matricole_selezionate
-    ''' 
-    Mi dà un outuput del tipo:
-        Lo studente non ha ancora sostenuto alcun esame
-        Lo studente non ha ancora sostenuto alcun esame
-        [345655, 987654, 789101]
-    perché stud2 e stud5 non hanno esami, quindi non hanno media, quindi non vengono inseriti nella lista, ma ho messo una stampa che dice che non hanno esami
-    '''
+        ''' 
+        Mi dà un outuput del tipo:
+            Lo studente 123456 non ha ancora sostenuto alcun esame
+            Lo studente 549245 non ha ancora sostenuto alcun esame
+            [345655, 987654, 789101]
+        poiché stud2 e stud5 non hanno esami, quindi non hanno media, quindi non vengono inseriti nella lista, ma ho messo una stampa che dice che non hanno esami
+        '''
 
-
+    # Salva su file
     def salva(self, nomefile):
         try:
             with open(nomefile, "w") as f:
@@ -313,10 +350,11 @@ class Archivio:
             print("Archivio salvato con successo in " + str(nomefile))
             return True
 
+    # Carica da file
     def carica(self,nomefile):
         try:
             with open(nomefile, "r") as f:
-                #987654; Giulia Verdi mat: 987654 esami: [('564GG', 18), ('241SS', 30), ('544MM', 26)];nota3
+                # Formato gestito: 987654; Giulia Verdi mat: 987654 esami: [('564GG', 18), ('241SS', 30), ('544MM', 26)];nota3
                 for line in f:
                     matricola, studente, note = line.split(";")
                     matricola = int(matricola)
@@ -341,45 +379,3 @@ class Archivio:
         except IOError as e:
             print("ERRORE durante il caricamento del file " + str(nomefile) + ":" + str(e))
             return False
-        
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-'''stud1 = Studente("Rossi", "Carlo", 345655, [('544MM', 30), ('564GG', 22)])
-stud2 = Studente("Bianchi", "Luigi", 123456, [])
-stud3 = Studente("Verdi", "Giulia", 987654, [('564GG', 18), ('241SS', 30), ('544MM', 26)])
-stud4 = Studente("Neri", "Giorgio", 789101, [('671IF', 25), ('410SS', 18), ('388LL', 29)])
-stud5 = Studente("Gialli", "Giorgio", 549245)
-
-
-
-archivio = Archivio()
-
-archivio.inserisci(stud1, "nota1")
-archivio.inserisci(stud2, "nota2")
-archivio.inserisci(stud3, "nota3")
-archivio.inserisci(stud4, "nota4")
-archivio.inserisci(stud5, "nota5")
-
-archivio.carica("archivio2.txt")'''
-'''
-studenti = {
-    345655: (stud1, 'nota1'),
-    123456: (stud2, 'nota2'),
-    987654: (stud3, 3),
-    789101: (stud4, 'nota2')
-}
-'''
